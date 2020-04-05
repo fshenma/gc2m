@@ -1,0 +1,82 @@
+{
+  "name": "julienne",
+  "version": "0.1.0",
+  "private": true,
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@emotion/core": "^10.0.9",
+    "@emotion/css": "^10.0.9",
+    "@reach/router": "^1.2.1",
+    "@types/algoliasearch": "^3.30.7",
+    "@types/debug": "^4.1.2",
+    "@types/jest": "24.0.11",
+    "@types/node": "11.11.3",
+    "@types/react": "16.8.8",
+    "@types/react-dom": "16.8.2",
+    "@types/react-filepond": "^5.0.2",
+    "@types/react-helmet": "^5.0.8",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/shortid": "^0.0.29",
+    "algoliasearch": "^3.32.1",
+    "debug": "^4.1.1",
+    "filepond": "^4.2.0",
+    "filepond-plugin-image-exif-orientation": "^1.0.4",
+    "filepond-plugin-image-preview": "^4.0.3",
+    "firebase": "^5.9.0",
+    "firestore-pagination-hook": "^1.0.0",
+    "focus-visible": "^4.1.5",
+    "grpc": "^1.20.2",
+    "immutable": "^4.0.0-rc.12",
+    "is-hotkey": "^0.1.4",
+    "lodash.find": "^4.6.0",
+    "lodash.isnil": "^4.0.0",
+    "lodash.omitby": "^4.6.0",
+    "lodash.orderby": "^4.6.0",
+    "lodash.sortby": "^4.7.0",
+    "moment": "^2.24.0",
+    "query-string": "^6.4.0",
+    "react": "^16.8.6",
+    "react-datetime": "^2.16.3",
+    "react-dom": "^16.8.6",
+    "react-filepond": "^7.0.1",
+    "react-firebase-hooks": "^1.1.0",
+    "react-gesture-view": "^1.1.0",
+    "react-helmet": "^5.2.0",
+    "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "2.1.8",
+    "react-spring": "^9.0.0-beta.31",
+    "react-swipeable-views": "^0.13.1",
+    "sancho": "^3.4.2",
+    "shortid": "^2.2.14",
+    "slate": "^0.47.4",
+    "slate-plain-serializer": "^0.6.36",
+    "slate-react": "^0.22.4",
+    "typescript": "^3.5.3",
+    "use-media": "^1.3.0",
+    "use-react-router": "^1.0.4",
+    "wouter": "^2.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "deploy": "yarn run build && firebase deploy"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "workspaces": [
+    "functions/*"
+  ],
+  "devDependencies": {
+    "firebase-tools": "^6.8.0"
+  }
+}
