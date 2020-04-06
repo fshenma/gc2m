@@ -458,18 +458,30 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
             <div css={{ marginTop: theme.spaces.lg }}>
               <Text variant="h5">Date</Text>
               {editing ? (
-                <>
-                  <Contain>
-                    <Datetime
-                      defaultValue={new Date()}
-                      dateFormat={"DD-MMM-YYYY"}
-                      timeFormat={true}
-                      isValidDate={current => {
-                        return current.day() !== 0 && current.day() !== 6;
-                      }}
-                    />
-                  </Contain>
-                </>
+                <div
+                  css={{
+                    display: "flex",
+                    marginLeft: "-0.25rem",
+                    paddingLeft: "0.25rem",
+                    marginRight: "-0.25rem",
+                    paddingRight: "0.25rem",
+                    // borderRadius: "0.25rem",
+                    marginBottom: theme.spaces.xs,
+                    fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'",
+                    '& input': {
+                      fontFamily:"inherit;"}
+                  }}
+                >
+                  <Datetime 
+                    defaultValue={new Date()}
+                    dateFormat={"DD-MMM-YYYY"}
+                    timeFormat={true}
+                    isValidDate={current => {
+                      return current.day() !== 0 && current.day() !== 6;
+                    }}
+                  />
+
+                </div>
               ) : (
                   <>
                     <Text>04/03/2020</Text>
