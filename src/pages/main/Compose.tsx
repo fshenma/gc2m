@@ -35,6 +35,7 @@ import { getUserFields, createEntry, deleteEntry, updateEntry } from "../../util
 import { useSession } from "../../utils/auth";
 import Helmet from "react-helmet";
 import { Link, useLocation } from "wouter";
+import moment from "moment";
 
 let n = 0;
 
@@ -49,6 +50,8 @@ export interface ComposeProps {
   defaultTitle?: string;
   defaultImage?: string;
   defaultDescription?: string;
+  defaultGameDate?:Date;
+  defaultGameLocation?:string;
   defaultOpponents?: Opponent[];
   readOnly?: boolean;
   editable?: boolean;
@@ -65,6 +68,8 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   id,
   editable,
   defaultCredit = "",
+  defaultGameDate, 
+  defaultGameLocation,
   defaultDescription,
   defaultImage,
   defaultOpponents,
@@ -73,6 +78,8 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   const theme = useTheme();
   const toast = useToast();
   const user = useSession();
+   
+  // const [gamePlaceholder, setGamePlaceholder] = React.useState("Game Location");
   const [loading, setLoading] = React.useState(false);
   const [editing, setEditing] = React.useState(!readOnly);
   const [content, setContent] = React.useState(() => {
@@ -82,6 +89,10 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   });
   const [image, setImage] = React.useState(defaultImage);
   const [title, setTitle] = React.useState(defaultTitle);
+  const [gameDateTime, setGameDateTime] = React.useState(defaultGameDate);
+  const defaultBostonLocation= "Boston, MA";
+  const [gameLocation, setGameLocation] = React.useState(defaultGameLocation);  
+  
   const [credit, setCredit] = React.useState(defaultCredit);
   const [Opponents, setOpponents] = React.useState<Opponent[]>(
     defaultOpponents || [
@@ -94,14 +105,13 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   const [, setLocation] = useLocation();
 
   const ref = React.useRef(null);
-  const dateRef = React.useRef(null);
   const [hoverOpponent, setHoverOpponent] = React.useState(null);
   const hoverIngredientRef = React.useRef(hoverOpponent);
 
   React.useEffect(() => {
-    hoverIngredientRef.current = hoverOpponent;
-
-  }, [hoverOpponent]);
+    typeof(gameLocation) === "undefined"?setGameLocation(defaultBostonLocation):gameLocation;
+    hoverIngredientRef.current = hoverOpponent;    
+  }, [hoverOpponent,gameLocation]);
 
   function onOpponentChange(i: number, value: Opponent) {
     Opponents[i] = value;
@@ -413,7 +423,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   },
                   marginLeft: theme.spaces.sm
                 }}
-                onPress={() => setEditing(false)}
+                onPress={() => {setEditing(false);gameLocation===""?setGameLocation(defaultBostonLocation):gameLocation}}
               >
                 Cancel
               </Button>
@@ -428,6 +438,8 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   const { text, content } = current.serialize();
                   const toSave = {
                     title,
+                    gameDate: gameDateTime.toUTCString(),
+                    gameLocation,
                     description: content,
                     plain: text,
                     Opponents,
@@ -456,7 +468,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
 
           <Container>
             <div css={{ marginTop: theme.spaces.lg }}>
-              <Text variant="h5">Date</Text>
+              <Text variant="h5">Game Date</Text>
               {editing ? (
                 <div
                   css={{
@@ -465,29 +477,61 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                     paddingLeft: "0.25rem",
                     marginRight: "-0.25rem",
                     paddingRight: "0.25rem",
+                   
                     // borderRadius: "0.25rem",
                     marginBottom: theme.spaces.xs,
                     fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'",
                     '& input': {
-                      fontFamily:"inherit;"}
+                      fontFamily:"inherit;",
+                      width:"200px",
+                    }
                   }}
                 >
                   <Datetime 
-                    defaultValue={new Date()}
-                    dateFormat={"DD-MMM-YYYY"}
+                    defaultValue={gameDateTime}
+                    dateFormat={"dddd, DD-MMM-YYYY"}
                     timeFormat={true}
                     isValidDate={current => {
                       return current.day() !== 0 && current.day() !== 6;
                     }}
+                    onChange={value => setGameDateTime(moment(value).toDate)}                
                   />
 
                 </div>
               ) : (
                   <>
-                    <Text>04/03/2020</Text>
+                    <Text>{moment(gameDateTime).format("dddd, MM/DD/YYYY h:mm a")}</Text>
                   </>
                 )}
             </div>
+            <div css={{ marginTop: theme.spaces.lg }}>
+                <Text variant="h5">Location</Text>
+                {editing ? (
+                  <>
+                    
+                    <Contain>
+                      <TransparentInput 
+                        // placeholder={gamePlaceholder}
+                        value={gameLocation}                         
+                        onFocus = {() => {gameLocation===defaultBostonLocation?setGameLocation(""):gameLocation}} 
+                        onChange={e => {
+                          setGameLocation(e.target.value);
+                        }}
+                      />
+                    </Contain>
+                  </>
+                ) : (
+                    <>
+                       
+                        <>
+                          <Text >{gameLocation}</Text>
+                           
+                        </>
+                       
+                    </>
+                  )}
+              </div>             
+            
             <div
               css={{
                 paddingTop: theme.spaces.lg,

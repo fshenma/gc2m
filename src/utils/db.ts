@@ -79,6 +79,17 @@ export interface GameOptions {
   Opponents: Opponent[];
 }
 
+export interface TeamOptions {
+  teamName: string;
+  plain: string;
+  userId: string;
+  description: string;
+  createdBy?: {
+    email: string;
+    photoURL: string;
+  };
+}
+
 export const createEntry = (options: GameOptions) => {
   log("save game: %o", options);
   return db.collection("scores").add({
@@ -87,7 +98,15 @@ export const createEntry = (options: GameOptions) => {
   });
 };
 
-interface RecipeUpdateOptions {
+export const createTeamEntry = (options: TeamOptions) => {
+  log("save game: %o", options);
+  return db.collection("teams").add({
+    ...omitBy(options, isNil),
+    updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
+  });
+};
+
+interface GameUpdateOptions {
   title: string;
   author: string;
   description: string;
@@ -100,13 +119,33 @@ interface RecipeUpdateOptions {
   Opponents: Opponent[];
 }
 
-export const updateEntry = (id: string, options: RecipeUpdateOptions) => {
+export const updateEntry = (id: string, options: GameUpdateOptions) => {
   return db
     .collection("scores")
     .doc(id)
     .update({
       ...omitBy(options, isNil),
       image: options.image || firebase.firestore.FieldValue.delete()
+    });
+};
+
+interface TeamUpdateOptions {
+  teamName: string;  
+  description: string;  
+  createdBy?: {
+    email: string;
+    photoURL: string;
+  };
+  plain: string;
+}
+
+export const updateTeamEntry = (id: string, options: TeamUpdateOptions) => {
+  return db
+    .collection("teams")
+    .doc(id)
+    .update({
+      ...omitBy(options, isNil),
+      // image: options.image || firebase.firestore.FieldValue.delete()
     });
 };
 

@@ -6,6 +6,7 @@ import {
   Navbar,
   useTheme,
   IconButton,
+  IconUsers,
   Button,
   Tabs,
   Tab,
@@ -13,6 +14,7 @@ import {
   TabPanel,
   MenuList,
   MenuItem,
+  MenuDivider,
   Tooltip,
   ResponsivePopover,
   IconChevronDown,
@@ -21,12 +23,14 @@ import {
   LightMode,
   Pager
 } from "sancho";
-import { GameList } from "./tabs/GameList";
+import { GameList } from "./components/GameList";
+import { TeamList } from "./components/TeamList";
 import { useFollowRequests } from "../../hooks/with-follow-request-count";
 import { FollowersList } from "./tabs/FollowersList";
 import { FollowingList } from "./tabs/FollowingList";
 import { useSession, signOut } from "../../utils/auth";
 import { Compose } from "./Compose";
+import { Team } from "./Team";
 import { Game } from "./components/Game";
 // import { SearchBox } from "../../components/SearchBox";
 import { Link, useRoute } from "wouter";
@@ -42,12 +46,15 @@ export const Main: React.FunctionComponent<MainProps> = props => {
   const theme = useTheme();
   const user = useSession();
   const [query, setQuery] = React.useState("");
+  const [activeTeam, setActiveTeam] = React.useState("");
   const [activeTab, setActiveTab] = React.useState(0);
   const { value: followRequests } = useFollowRequests();
   const isLarge = useMedia({ minWidth: "768px" });
-
+  const [match, pa] = useRoute("/:userid/:teamName");  
+  const actTeam = match?pa.teamName:"My Team";
   const [, params] = useRoute("/:game*");
   const showingGame = params.game;
+
 
   // i'm disabling this for now, since it was running really poorly. unsure
   // whats up here.
@@ -60,6 +67,11 @@ export const Main: React.FunctionComponent<MainProps> = props => {
   // });
 
   const renderList = isLarge || !showingGame;
+
+  React.useEffect (() => {
+    setActiveTeam(decodeURI(actTeam));
+
+  },[actTeam]);
 
   return (
     <Layout>
@@ -138,7 +150,10 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                   <ResponsivePopover
                     content={
                       <MenuList>
-                        <MenuItem onPress={signOut}>Sign out</MenuItem>
+                        <TeamList />
+                        <MenuDivider />
+                        <MenuItem contentBefore={<IconUsers />} component={Link} to="/newTeam">Add Team </MenuItem>    
+                        <MenuItem onPress={signOut}>Manage Teams </MenuItem>                                             
                       </MenuList>
                     }
                   >
@@ -148,7 +163,8 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                         iconAfter={<IconChevronDown />}
                         variant="ghost"
                       >
-                        {user.displayName || user.email}
+                        {/* {user.displayName || user.email} */}
+                        {activeTeam}
                       </Button>
                     </DarkMode>
                   </ResponsivePopover>
@@ -324,6 +340,9 @@ function MainContent({ id }: MainContentProps) {
 
   if (id === "new") {
     return <Compose />;
+  }
+  else if (id === "newTeam") {
+    return <Team />;
   }
 
   return <Game id={id} />;

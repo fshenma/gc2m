@@ -6,19 +6,23 @@ import { Compose } from "../Compose";
 import { useSession } from "../../../utils/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { useTheme, Text } from "sancho";
+import moment from "moment";
+import { useRoute } from "wouter";
 
 export interface GameProps {
-  id: string;
+  id: any;
 }
 
 export const Game: React.FunctionComponent<GameProps> = ({ id }) => {
+  const [match, params] = useRoute("/:userid/:teamName");
   const theme = useTheme();
   const user = useSession();
+  const uid = match?params.userid:id;
   const { value, loading, error } = useDocument(
     firebase
       .firestore()
       .collection("scores")
-      .doc(id)
+      .doc(uid)
   );
 
   if (loading) {
@@ -51,6 +55,8 @@ export const Game: React.FunctionComponent<GameProps> = ({ id }) => {
         id={id}
         editable={value.get("userId") === user.uid}
         defaultCredit={value.get("author")}
+        defaultGameDate={new Date(moment(value.get("GameDate")).format('MM/DD/YYYY h:mm a'))}
+        defaultGameLocation={value.get("gameLocation")}
         defaultDescription={value.get("description")}
         defaultTitle={value.get("title")}
         defaultOpponents={value.get("Opponents")}
