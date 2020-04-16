@@ -99,10 +99,20 @@ export const createEntry = (options: GameOptions) => {
 };
 
 export const createTeamEntry = (options: TeamOptions) => {
-  log("save game: %o", options);
+  log("save team: %o", options);
   return db.collection("teams").add({
     ...omitBy(options, isNil),
     updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
+  });
+};
+
+export const createActiveTeamEntry = (teamName:string, userId:string) => {
+  log("save active team: %o", teamName);
+  return db.collection("teams")
+    .doc(userId)
+    .update({
+      ...omitBy(teamName, isNil),
+      updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
   });
 };
 

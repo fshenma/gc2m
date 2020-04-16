@@ -7,6 +7,7 @@ import debug from "debug";
 import { Link, useRoute, useLocation } from "wouter";
 import { useSession } from "../../../utils/auth";
 import * as firebase from "firebase/app";
+import { createActiveTeamEntry } from "../../../utils/db";
 import orderBy from "lodash.orderby";
 import {
   Text,
@@ -88,7 +89,7 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
   //query
 }) => {
   const theme = useTheme();
-  // const [state, dispatch] = React.useReducer(reducer, initialState);
+  // const [state, dispatch] = React.useReducer(reducer, initialState);  
   const user = useSession();
 
   const {
@@ -109,6 +110,26 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
       limit: 25
     }
   );
+
+  // // perform an algolia query when query changes
+  // React.useEffect(() => {
+  //   if (query) {
+  //     log("query: %s", query);
+      // algolia.search(query).then(results => {
+      //   log("results: %o", results);
+      //   dispatch({
+      //     type: "SEARCH",
+      //     value: results
+      //   });
+      // });
+  //   }
+  // }, [query]);
+
+  // retrieve our algolia search index on mount
+  // React.useEffect(() => {
+  //   // algolia.getIndex();
+  // }, []);
+
 
   // retrieve our algolia search index on mount
   // React.useEffect(() => {
@@ -230,13 +251,44 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   // const { src, error } = useFirebaseImage("thumb-sm@", game.image);
   const href = `/${id}/${team.teamName}`;
   const [isActive] = useRoute(href);
+  const [activeTeam, setActiveTeam] = React.useState("");
   const [, setLocation] = useLocation();
+
+  React.useEffect(() => {
+      log(activeTeam) ;
+      saveActiveTeam(activeTeam);
+    }, [activeTeam]);
+
+   
+
+  async function saveActiveTeam(teamName: string) {
+    log("create entry");
+
+    try {
+      const user = useSession();
+      const entry = await createActiveTeamEntry(
+        teamName,
+        user.uid,
+        
+      );
+      // setLocation("/" + entry.id, { replace: true });
+    } catch (err) {
+    //   console.error(err);
+    //   setLoading(false);
+    //   toast({
+    //     title: "An error occurred. Please try again",
+    //     subtitle: err.message,
+    //     intent: "danger"
+      // });
+    }
+  }
 
   return (
     <ListItem
       wrap={false}
       onClick={e => {
-        e.preventDefault();
+        e.preventDefault();      
+        setActiveTeam(team.teamName);
         setLocation(href);
       }}
       aria-current={isActive}
