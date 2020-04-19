@@ -7,7 +7,7 @@ import debug from "debug";
 import { Link, useRoute, useLocation } from "wouter";
 import { useSession } from "../../../utils/auth";
 import * as firebase from "firebase/app";
-import { createActiveTeamEntry } from "../../../utils/db";
+import {getUserFields, updateTeamEntry } from "../../../utils/db";
 import orderBy from "lodash.orderby";
 import {
   Text,
@@ -16,6 +16,7 @@ import {
   Spinner,
   Button,
   useTheme,
+  useToast,
   Embed,
   Skeleton
 } from "sancho";
@@ -41,6 +42,7 @@ export interface Team {
   plain: string;
   updatedAt: any;
   userId: string;
+  active?: boolean;
   // image?: string;
   createdBy?: {
     email: string;
@@ -90,7 +92,7 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
 }) => {
   const theme = useTheme();
   // const [state, dispatch] = React.useReducer(reducer, initialState);  
-  const user = useSession();
+  const {user} = useSession();
 
   const {
     loading,
@@ -207,7 +209,7 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
               <TeamListItem
                 id={g.id}
                 key={g.id}
-                editable
+                // editable
                 team={g.data() as Team}
               />
             ))}
@@ -240,7 +242,7 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
 };
 
 interface TeamListItemProps {
-  editable?: boolean;
+  // editable?: boolean;
   team: Team;
   id: string;
   highlight?: any;
@@ -253,33 +255,37 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   const [isActive] = useRoute(href);
   const [activeTeam, setActiveTeam] = React.useState("");
   const [, setLocation] = useLocation();
+  const {user} = useSession();
+  const toast = useToast();
 
   React.useEffect(() => {
       log(activeTeam) ;
-      saveActiveTeam(activeTeam);
+      // saveActiveTeam(activeTeam);
     }, [activeTeam]);
 
    
 
-  async function saveActiveTeam(teamName: string) {
+    const  saveActiveTeam = async () => {
     log("create entry");
 
     try {
-      const user = useSession();
-      const entry = await createActiveTeamEntry(
-        teamName,
-        user.uid,
-        
+      // const user = useSession();
+      team.active = true;
+      await updateTeamEntry(
+        id,
+        {...team,
+          createdBy: getUserFields(user),
+        }
       );
       // setLocation("/" + entry.id, { replace: true });
     } catch (err) {
-    //   console.error(err);
-    //   setLoading(false);
-    //   toast({
-    //     title: "An error occurred. Please try again",
-    //     subtitle: err.message,
-    //     intent: "danger"
-      // });
+      console.error(err);
+       
+      toast({
+        title: "An error occurred. Please try again",
+        subtitle: err.message,
+        intent: "danger"
+      });
     }
   }
 
@@ -288,8 +294,9 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
       wrap={false}
       onClick={e => {
         e.preventDefault();      
-        setActiveTeam(team.teamName);
-        setLocation(href);
+        // setActiveTeam(team.teamName);
+        // setLocation(href);
+        saveActiveTeam();
       }}
       aria-current={isActive}
       href={`/${id}`}

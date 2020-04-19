@@ -7,4 +7,5 @@ export type TeamType = {
     roster: string;    
     plain: string;     
     description: string;
+    active?: boolean;
 };

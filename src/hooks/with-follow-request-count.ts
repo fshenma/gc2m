@@ -11,7 +11,7 @@ const log = debug("app:with-follow-requests");
  */
 
 export function useFollowRequests() {
-  const user = useSession();
+  const {user} = useSession();
   const { error, loading, value } = useCollection(
     firebase
       .firestore()
@@ -35,7 +35,7 @@ export function useFollowRequests() {
  */
 
 export function useFollowers(toUser = true) {
-  const user = useSession();
+  const {user} = useSession();
 
   const [loading, setLoading] = React.useState(true);
   const [userList, setUserList] = React.useState([]);

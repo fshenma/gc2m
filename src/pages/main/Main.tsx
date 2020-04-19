@@ -44,14 +44,14 @@ export interface MainProps {
 
 export const Main: React.FunctionComponent<MainProps> = props => {
   const theme = useTheme();
-  const user = useSession();
+  const {user, activeTeam} = useSession();
   const [query, setQuery] = React.useState("");
-  const [activeTeam, setActiveTeam] = React.useState("");
+  // const [activeTeam, setActiveTeam] = React.useState("");
   const [activeTab, setActiveTab] = React.useState(0);
   const { value: followRequests } = useFollowRequests();
   const isLarge = useMedia({ minWidth: "768px" });
   const [match, pa] = useRoute("/:userid/:teamName");  
-  const actTeam = match?pa.teamName:"My Team";
+  // const actTeam = match?pa.teamName:"My Team";
   const [, params] = useRoute("/:game*");
   const showingGame = params.game;
 
@@ -68,10 +68,10 @@ export const Main: React.FunctionComponent<MainProps> = props => {
 
   const renderList = isLarge || !showingGame;
 
-  React.useEffect (() => {
-    setActiveTeam(decodeURI(actTeam));
+  // React.useEffect (() => {
+  //   // setActiveTeam(decodeURI(actTeam));
 
-  },[actTeam]);
+  // },[actTeam]);
 
   return (
     <Layout>

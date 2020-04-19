@@ -7,8 +7,9 @@ import { Branding } from "./pages/Branding";
 import { Spinner } from "sancho";
 import { Main } from "./pages/main/Main";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { userContext } from "./components/user-context";
+import { userContext,appStateReducer,initialState} from "./components/user-context";
 import Helmet from "react-helmet";
+import { useReducer } from "react";
 
 interface PrivateRouteProps {
   component: any;
@@ -36,6 +37,7 @@ const PrivateRoute = ({
 
 function App() {
   const { initialising, user } = useAuthState(firebase.auth());
+  const [userState,dispatch] = useReducer(appStateReducer, initialState);
 
   if (initialising) {
     return (
@@ -57,7 +59,8 @@ function App() {
     <userContext.Provider
       value={{
         user: user,
-        initialising
+        initialising,
+        activeTeam: "My Team"
       }}
     >
       <Global

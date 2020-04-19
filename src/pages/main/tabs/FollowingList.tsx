@@ -53,7 +53,7 @@ export const FollowingList: React.FunctionComponent<
 > = props => {
   const theme = useTheme();
   const toast = useToast();
-  const user = useSession();
+  const {user} = useSession();
   const { loading, userList } = useFollowers(false);
   const [query, setQuery] = React.useState("");
   const [

@@ -16,7 +16,7 @@ export interface GameProps {
 export const Game: React.FunctionComponent<GameProps> = ({ id }) => {
   const [match, params] = useRoute("/:userid/:teamName");
   const theme = useTheme();
-  const user = useSession();
+  const {user} = useSession();
   const uid = match?params.userid:id;
   const { value, loading, error } = useDocument(
     firebase

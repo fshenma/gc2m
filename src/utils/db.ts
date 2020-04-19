@@ -6,6 +6,7 @@ import debug from "debug";
 import omitBy from "lodash.omitby";
 import isNil from "lodash.isnil";
 import { Opponent } from "../models/Game";
+// import {TeamType} from "../models/Team";
 
 const log = debug("app:db");
 
@@ -106,16 +107,6 @@ export const createTeamEntry = (options: TeamOptions) => {
   });
 };
 
-export const createActiveTeamEntry = (teamName:string, userId:string) => {
-  log("save active team: %o", teamName);
-  return db.collection("teams")
-    .doc(userId)
-    .update({
-      ...omitBy(teamName, isNil),
-      updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
-  });
-};
-
 interface GameUpdateOptions {
   title: string;
   author: string;
@@ -141,6 +132,9 @@ export const updateEntry = (id: string, options: GameUpdateOptions) => {
 
 interface TeamUpdateOptions {
   teamName: string;  
+  teamLocation: string;
+  coach: string;
+  roster: string;    
   description: string;  
   createdBy?: {
     email: string;

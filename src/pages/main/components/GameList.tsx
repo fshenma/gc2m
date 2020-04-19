@@ -86,7 +86,7 @@ export const GameList: React.FunctionComponent<GameListProps> = ({
 }) => {
   const theme = useTheme();
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const user = useSession();
+  const {user} = useSession();
 
   const {
     loading,

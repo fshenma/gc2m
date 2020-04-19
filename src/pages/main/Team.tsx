@@ -73,7 +73,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
 }) => {
   const theme = useTheme();
   const toast = useToast();
-  const user = useSession();
+  const {user} = useSession();
    
   // const [gamePlaceholder, setGamePlaceholder] = React.useState("Game Location");
   const [loading, setLoading] = React.useState(false);
