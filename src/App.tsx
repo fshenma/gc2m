@@ -37,7 +37,7 @@ const PrivateRoute = ({
 
 function App() {
   const { initialising, user } = useAuthState(firebase.auth());
-  const [userState,dispatch] = useReducer(appStateReducer, initialState);
+  const [teamState,dispatch] = useReducer(appStateReducer, initialState);
 
   if (initialising) {
     return (
@@ -60,7 +60,8 @@ function App() {
       value={{
         user: user,
         initialising,
-        activeTeam: "My Team"
+        activeTeam: teamState.activeTeam,
+        dispatch
       }}
     >
       <Global

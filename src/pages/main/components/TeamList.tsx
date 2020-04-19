@@ -171,36 +171,7 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
           )} */}
 
           <List>
-            {loading && (
-              <React.Fragment>
-                <ListItem
-                  interactive={false}
-                  contentBefore={
-                    <Skeleton
-                      css={{
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "50%"
-                      }}
-                    />
-                  }
-                  primary={<Skeleton css={{ maxWidth: "160px" }} />}
-                />
-                {/* <ListItem
-                  interactive={false}
-                  contentBefore={
-                    <Skeleton
-                      css={{
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "50%"
-                      }}
-                    />
-                  }
-                  primary={<Skeleton css={{ maxWidth: "200px" }} />}
-                /> */}
-              </React.Fragment>
-            )}
+             
             {orderBy(
               items,
               item => item.get("updatedAt").toMillis(),
@@ -255,12 +226,13 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   const [isActive] = useRoute(href);
   const [activeTeam, setActiveTeam] = React.useState("");
   const [, setLocation] = useLocation();
-  const {user} = useSession();
+  const {user,dispatch} = useSession();
   const toast = useToast();
 
   React.useEffect(() => {
       log(activeTeam) ;
       // saveActiveTeam(activeTeam);
+      team.active && dispatch({type:"SET_ACTIVE",item:activeTeam});
     }, [activeTeam]);
 
    
@@ -276,8 +248,10 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
         {...team,
           createdBy: getUserFields(user),
         }
+        
       );
-      // setLocation("/" + entry.id, { replace: true });
+      dispatch({type:"SET_ACTIVE",item:team.teamName});
+      // setLocation(href);
     } catch (err) {
       console.error(err);
        
@@ -293,7 +267,7 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
     <ListItem
       wrap={false}
       onClick={e => {
-        e.preventDefault();      
+        // e.preventDefault();      
         // setActiveTeam(team.teamName);
         // setLocation(href);
         saveActiveTeam();

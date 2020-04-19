@@ -6,8 +6,8 @@ import { userContext } from "../components/user-context";
 const provider = new firebase.auth.GoogleAuthProvider();
 
 export const useSession = () => {
-  const { user, activeTeam } = useContext(userContext);
-  return { user, activeTeam };
+  const { user, activeTeam, dispatch} = useContext(userContext);
+  return { user, activeTeam,dispatch };
 };
 
 export const loginWithGoogle = async () => {

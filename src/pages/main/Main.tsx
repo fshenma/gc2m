@@ -150,12 +150,12 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                   <ResponsivePopover
                     content={
                       <MenuList>
-                        <TeamList />
+                        <MenuItem>  <TeamList /></MenuItem>  
                         <MenuDivider />
                         <MenuItem contentBefore={<IconUsers />} component={Link} to="/newTeam">Add Team </MenuItem>    
                         <MenuItem onPress={signOut}>Manage Teams </MenuItem>                                             
                       </MenuList>
-                    }
+                    }                  
                   >
                     <DarkMode>
                       <Button

@@ -3,12 +3,12 @@ import * as React from "react";
 interface UserContext {
   user?: firebase.User;
   initialising?: boolean;
-  activeTeam?: string;
+  activeTeam?: any;
   dispatch?: any
 }
 
 export const userContext = React.createContext<UserContext>({
-  user: undefined
+  activeTeam: ""
 });
 
 export const appStateReducer = (state, action) => {
@@ -17,7 +17,7 @@ export const appStateReducer = (state, action) => {
        
       return {
         ...state,
-        activeTeam: "",        
+        activeTeam: action.item,        
       };
     }
     
@@ -27,6 +27,6 @@ export const appStateReducer = (state, action) => {
 };
 
 export const initialState = {
-  activeTeam: "",
+  activeTeam: "my E team",
    
 };
