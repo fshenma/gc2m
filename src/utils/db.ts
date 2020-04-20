@@ -80,6 +80,22 @@ export interface GameOptions {
   Opponents: Opponent[];
 }
 
+export const createEntry = (options: GameOptions) => {
+  log("save game: %o", options);
+  return db.collection("scores").add({
+    ...omitBy(options, isNil),
+    updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
+  });
+};
+
+export const getActiveTeam = (user) => {
+   
+  return db.collection("teams")
+  .where("userId", "==", user!.uid)
+  .where("active", "==", true)
+  .get();   
+};
+
 export interface TeamOptions {
   teamName: string;
   plain: string;
@@ -90,14 +106,6 @@ export interface TeamOptions {
     photoURL: string;
   };
 }
-
-export const createEntry = (options: GameOptions) => {
-  log("save game: %o", options);
-  return db.collection("scores").add({
-    ...omitBy(options, isNil),
-    updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
-  });
-};
 
 export const createTeamEntry = (options: TeamOptions) => {
   log("save team: %o", options);

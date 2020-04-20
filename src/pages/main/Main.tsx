@@ -29,6 +29,7 @@ import { useFollowRequests } from "../../hooks/with-follow-request-count";
 import { FollowersList } from "./tabs/FollowersList";
 import { FollowingList } from "./tabs/FollowingList";
 import { useSession, signOut } from "../../utils/auth";
+import {getActiveTeam } from "../../utils/db";
 import { Compose } from "./Compose";
 import { Team } from "./Team";
 import { Game } from "./components/Game";
@@ -36,6 +37,7 @@ import { Game } from "./components/Game";
 import { Link, useRoute } from "wouter";
 import { useMedia } from "use-media";
 import { Layout } from "../../components/Layout";
+import { TeamType } from "../../models/Team";
 
 export interface MainProps {
   path?: string;
@@ -44,7 +46,7 @@ export interface MainProps {
 
 export const Main: React.FunctionComponent<MainProps> = props => {
   const theme = useTheme();
-  const {user, activeTeam} = useSession();
+  const {user, activeTeam, dispatch} = useSession();
   const [query, setQuery] = React.useState("");
   // const [activeTeam, setActiveTeam] = React.useState("");
   const [activeTab, setActiveTab] = React.useState(0);
@@ -68,10 +70,21 @@ export const Main: React.FunctionComponent<MainProps> = props => {
 
   const renderList = isLarge || !showingGame;
 
-  // React.useEffect (() => {
-  //   // setActiveTeam(decodeURI(actTeam));
-
-  // },[actTeam]);
+  React.useEffect ( () => {
+     async function loadActiveTeam ()  {
+      try {
+        // setActiveTeam(decodeURI(actTeam));
+        await getActiveTeam(user).then(data => {
+          const team = data.docs[0].data() as TeamType
+          team && dispatch({type:"SET_ACTIVE",item:team.teamName});
+        })
+      } catch (err) {
+        console.error(err);                 
+      }
+     }
+    
+     loadActiveTeam ();
+  },[]);
 
   return (
     <Layout>
@@ -165,6 +178,7 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                       >
                         {/* {user.displayName || user.email} */}
                         {activeTeam}
+                        {/* <TeamList /> */}
                       </Button>
                     </DarkMode>
                   </ResponsivePopover>

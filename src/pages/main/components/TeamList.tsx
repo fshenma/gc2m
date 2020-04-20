@@ -130,7 +130,8 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
   // retrieve our algolia search index on mount
   // React.useEffect(() => {
   //   // algolia.getIndex();
-  // }, []);
+  //   log(items);
+  // }, [items]);
 
 
   // retrieve our algolia search index on mount
@@ -232,7 +233,10 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   React.useEffect(() => {
       log(activeTeam) ;
       // saveActiveTeam(activeTeam);
+      // setActiveTeam("test team");
+      // activeTeam && dispatch({type:"SET_ACTIVE",activeTeam});
       team.active && dispatch({type:"SET_ACTIVE",item:activeTeam});
+      
     }, [activeTeam]);
 
    
