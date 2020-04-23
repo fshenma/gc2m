@@ -21,7 +21,14 @@ import {
   IconPlus,
   DarkMode,
   LightMode,
-  Pager
+  Pager,
+  IconEdit,
+  IconUser,
+  IconList,
+  IconHome,
+  IconInstagram,
+  IconPackage,
+  IconMoreVertical,
 } from "sancho";
 import { GameList } from "./components/GameList";
 import { TeamList } from "./components/TeamList";
@@ -29,7 +36,7 @@ import { useFollowRequests } from "../../hooks/with-follow-request-count";
 import { FollowersList } from "./tabs/FollowersList";
 import { FollowingList } from "./tabs/FollowingList";
 import { useSession, signOut } from "../../utils/auth";
-import {getActiveTeam } from "../../utils/db";
+import { getActiveTeam } from "../../utils/db";
 import { Compose } from "./Compose";
 import { Team } from "./Team";
 import { Game } from "./components/Game";
@@ -46,13 +53,13 @@ export interface MainProps {
 
 export const Main: React.FunctionComponent<MainProps> = props => {
   const theme = useTheme();
-  const {user, activeTeam, dispatch} = useSession();
+  const { user, activeTeam, dispatch } = useSession();
   const [query, setQuery] = React.useState("");
   // const [activeTeam, setActiveTeam] = React.useState("");
   const [activeTab, setActiveTab] = React.useState(0);
   const { value: followRequests } = useFollowRequests();
   const isLarge = useMedia({ minWidth: "768px" });
-  const [match, pa] = useRoute("/:userid/:teamName");  
+  // const [match, pa] = useRoute("/:userid/:teamName");  
   // const actTeam = match?pa.teamName:"My Team";
   const [, params] = useRoute("/:game*");
   const showingGame = params.game;
@@ -70,21 +77,21 @@ export const Main: React.FunctionComponent<MainProps> = props => {
 
   const renderList = isLarge || !showingGame;
 
-  React.useEffect ( () => {
-     async function loadActiveTeam ()  {
+  React.useEffect(() => {
+    async function loadActiveTeam() {
       try {
         // setActiveTeam(decodeURI(actTeam));
         await getActiveTeam(user).then(data => {
           const team = data.docs[0].data() as TeamType
-          team && dispatch({type:"SET_ACTIVE",item:team.teamName});
+          team && dispatch({ type: "SET_ACTIVE", item: team.teamName });
         })
       } catch (err) {
-        console.error(err);                 
+        console.error(err);
       }
-     }
-    
-     loadActiveTeam ();
-  },[]);
+    }
+
+    loadActiveTeam();
+  }, []);
 
   return (
     <Layout>
@@ -158,17 +165,34 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                   justifyContent: "space-between"
                 }}
               >
-                <div css={{ width: "42px" }} />
+                <ResponsivePopover
+                  content={
+                    <MenuList>
+                      <MenuItem contentBefore={<IconUser />} onPress={() => alert("Hello 1")}>
+                        Profile
+                      </MenuItem>
+                      <MenuItem contentBefore={<IconList />} component="a" href="#">
+                        Lists
+                      </MenuItem>
+                      <MenuItem contentBefore={<IconHome />}>Moments</MenuItem>
+                      <MenuDivider />
+                       
+                      <MenuItem contentBefore={<IconPackage />} onPress={signOut}>Sign Out</MenuItem>
+                    </MenuList>
+                  }>
+                  <IconButton variant="ghost" icon={<IconMoreVertical />} label="show more" />
+                </ResponsivePopover>
+                {/* <div css={{ width: "42px" }} /> */}
                 <LightMode>
                   <ResponsivePopover
                     content={
                       <MenuList>
-                        <MenuItem>  <TeamList /></MenuItem>  
+                        <TeamList />
                         <MenuDivider />
-                        <MenuItem contentBefore={<IconUsers />} component={Link} to="/newTeam">Add Team </MenuItem>    
-                        <MenuItem onPress={signOut}>Manage Teams </MenuItem>                                             
+                        <MenuItem contentBefore={<IconUsers />} component={Link} to="/newTeam">Add Team </MenuItem>
+                        <MenuItem contentBefore={<IconEdit />}  >Edit Team </MenuItem>
                       </MenuList>
-                    }                  
+                    }
                   >
                     <DarkMode>
                       <Button
