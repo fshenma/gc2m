@@ -119,11 +119,11 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   const {user,dispatch} = useSession();
   const toast = useToast();
 
-  React.useEffect(() => {
+  // React.useEffect(() => {
       
-      team.active && dispatch({type:"SET_ACTIVE",item:team.active});
+  //     team.active && dispatch({type:"SET_ACTIVE",item:team.active});
       
-    }, [team.active]);
+  //   }, [team.active]);
 
     const  saveActiveTeam = async () => {
     log("create entry");
