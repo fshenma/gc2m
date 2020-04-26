@@ -5,41 +5,20 @@ import {
   Toolbar,
   Navbar,
   useTheme,
-  IconButton,
-  IconUsers,
-  Button,
   Tabs,
   Tab,
   Layer,
   TabPanel,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  Tooltip,
-  ResponsivePopover,
-  IconChevronDown,
-  IconPlus,
   DarkMode,
   LightMode,
   Pager,
-  IconEdit,
-  IconUser,
-  IconList,
-  IconHome,
-  IconInstagram,
-  IconPackage,
-  IconMoreVertical,
 } from "sancho";
 import { GameList } from "./components/GameList";
-import { TeamList } from "./components/TeamList";
 import { useFollowRequests } from "../../hooks/with-follow-request-count";
 import { FollowersList } from "./tabs/FollowersList";
 import { FollowingList } from "./tabs/FollowingList";
 import { useSession, signOut } from "../../utils/auth";
 import { getActiveTeam } from "../../utils/db";
-import { Compose } from "./Compose";
-import { Team } from "./Team";
-import { Game } from "./components/Game";
 // import { SearchBox } from "../../components/SearchBox";
 import { Link, useRoute } from "wouter";
 import { useMedia } from "use-media";
@@ -47,6 +26,8 @@ import { Layout } from "../../components/Layout";
 import { TeamType } from "../../models/Team";
 import { Profile } from "./components/Profile";
 import { TeamBar } from "./components/TeamBar";
+import { NewGameBar } from "./components/NewGameBar";
+import { MainContent } from "./components/MainContent";
 
 export interface MainProps {
   path?: string;
@@ -57,12 +38,9 @@ export const Main: React.FunctionComponent<MainProps> = props => {
   const theme = useTheme();
   const { user, activeTeam, dispatch } = useSession();
   const [query, setQuery] = React.useState("");
-  // const [activeTeam, setActiveTeam] = React.useState("");
   const [activeTab, setActiveTab] = React.useState(0);
   const { value: followRequests } = useFollowRequests();
   const isLarge = useMedia({ minWidth: "768px" });
-  // const [match, pa] = useRoute("/:userid/:teamName");  
-  // const actTeam = match?pa.teamName:"My Team";
   const [, params] = useRoute("/:game*");
   const showingGame = params.game;
 
@@ -167,62 +145,14 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                   justifyContent: "space-between"
                 }}
               >
-                {/* <ResponsivePopover
-                  content={
-                    <MenuList>
-                      <MenuItem contentBefore={<IconUser />} onPress={() => alert("Hello 1")}>
-                        Profile
-                      </MenuItem>
-                      <MenuItem contentBefore={<IconList />} component="a" href="#">
-                        Lists
-                      </MenuItem>
-                      <MenuItem contentBefore={<IconHome />}>Moments</MenuItem>
-                      <MenuDivider />
-                       
-                      <MenuItem contentBefore={<IconPackage />} onPress={signOut}>Sign Out</MenuItem>
-                    </MenuList>
-                  }>
-                  <IconButton variant="ghost" icon={<IconMoreVertical />} label="show more" />
-                </ResponsivePopover> */}
-                {/* <div css={{ width: "42px" }} /> */}
                 <Profile />
+
                 <LightMode>
-                  {/* <ResponsivePopover
-                    content={
-                      <MenuList>
-                        <TeamList />
-                        <MenuDivider />
-                        <MenuItem contentBefore={<IconUsers />} component={Link} to="/newTeam">Add Team </MenuItem>
-                        <MenuItem contentBefore={<IconEdit />}  >Edit Team </MenuItem>
-                      </MenuList>
-                    }
-                  >
-                    <DarkMode>
-                      <Button
-                        size="md"
-                        iconAfter={<IconChevronDown />}
-                        variant="ghost"
-                      >                         
-                        {activeTeam}                         
-                      </Button>
-                    </DarkMode>
-                  </ResponsivePopover> */}
-                  <TeamBar ActiveTeam={activeTeam} toLink="/newTeam"/>
+                  <TeamBar ActiveTeam={activeTeam} toLink="/newTeam" />
                 </LightMode>
-                <Tooltip content="Add a new game">
-                  <div>
-                    <DarkMode>
-                      <IconButton
-                        component={Link}
-                        to="/new"
-                        variant="ghost"
-                        label="Add game"
-                        size="md"
-                        icon={<IconPlus />}
-                      />
-                    </DarkMode>
-                  </div>
-                </Tooltip>
+
+                <NewGameBar newGameLink="/new" />
+
               </Toolbar>
             </Navbar>
             <div css={{ flex: "0 0 auto", zIndex: 2 }}>
@@ -277,32 +207,17 @@ export const Main: React.FunctionComponent<MainProps> = props => {
               }}
               id="games"
             >
-              <div
-                css={{
-                  flex: "0 0 auto"
-                }}
-              >
-                {/* <SearchBox query={query} setQuery={setQuery} /> */}
-              </div>
-
-              <div
-                css={{
-                  flex: 1,
-                  [theme.mediaQueries.md]: {
-                    overflowY: "scroll",
-                    WebkitOverflowScrolling: "touch"
-                  }
-                }}
-              >
-                <GameList query={query} />
-              </div>
+              <GameList query={query} />
             </TabPanel>
+
             <TabPanel css={{ height: "100%" }} id="following">
               <FollowingList />
             </TabPanel>
+
             <TabPanel id="followers">
               <FollowersList />
             </TabPanel>
+
           </Pager>
         </Layer>
 
@@ -359,7 +274,7 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                   }
                 }}
               >
-                <MainContent id={showingGame} />
+                <MainContent contentId={showingGame} />
               </Layer>
             </div>
           </div>
@@ -368,22 +283,3 @@ export const Main: React.FunctionComponent<MainProps> = props => {
     </Layout>
   );
 };
-
-interface MainContentProps {
-  id?: string;
-}
-
-function MainContent({ id }: MainContentProps) {
-  if (!id) {
-    return null;
-  }
-
-  if (id === "new") {
-    return <Compose />;
-  }
-  else if (id === "newTeam") {
-    return <Team />;
-  }
-
-  return <Game id={id} />;
-}
