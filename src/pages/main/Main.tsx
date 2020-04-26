@@ -46,6 +46,7 @@ import { useMedia } from "use-media";
 import { Layout } from "../../components/Layout";
 import { TeamType } from "../../models/Team";
 import { Profile } from "./components/Profile";
+import { TeamBar } from "./components/TeamBar";
 
 export interface MainProps {
   path?: string;
@@ -186,7 +187,7 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                 {/* <div css={{ width: "42px" }} /> */}
                 <Profile />
                 <LightMode>
-                  <ResponsivePopover
+                  {/* <ResponsivePopover
                     content={
                       <MenuList>
                         <TeamList />
@@ -205,7 +206,8 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                         {activeTeam}                         
                       </Button>
                     </DarkMode>
-                  </ResponsivePopover>
+                  </ResponsivePopover> */}
+                  <TeamBar ActiveTeam={activeTeam} toLink="/newTeam"/>
                 </LightMode>
                 <Tooltip content="Add a new game">
                   <div>
