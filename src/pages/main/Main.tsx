@@ -45,6 +45,7 @@ import { Link, useRoute } from "wouter";
 import { useMedia } from "use-media";
 import { Layout } from "../../components/Layout";
 import { TeamType } from "../../models/Team";
+import { Profile } from "./components/Profile";
 
 export interface MainProps {
   path?: string;
@@ -165,7 +166,7 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                   justifyContent: "space-between"
                 }}
               >
-                <ResponsivePopover
+                {/* <ResponsivePopover
                   content={
                     <MenuList>
                       <MenuItem contentBefore={<IconUser />} onPress={() => alert("Hello 1")}>
@@ -181,8 +182,9 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                     </MenuList>
                   }>
                   <IconButton variant="ghost" icon={<IconMoreVertical />} label="show more" />
-                </ResponsivePopover>
+                </ResponsivePopover> */}
                 {/* <div css={{ width: "42px" }} /> */}
+                <Profile />
                 <LightMode>
                   <ResponsivePopover
                     content={
@@ -199,10 +201,8 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                         size="md"
                         iconAfter={<IconChevronDown />}
                         variant="ghost"
-                      >
-                        {/* {user.displayName || user.email} */}
-                        {activeTeam}
-                        {/* <TeamList /> */}
+                      >                         
+                        {activeTeam}                         
                       </Button>
                     </DarkMode>
                   </ResponsivePopover>
