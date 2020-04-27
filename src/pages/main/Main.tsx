@@ -63,7 +63,7 @@ export const Main: React.FunctionComponent<MainProps> = props => {
         // setActiveTeam(decodeURI(actTeam));
         await getActiveTeam(user).then(data => {
           const team = data.docs[0].data() as TeamType
-          team && dispatch({ type: "SET_ACTIVE", item: team.teamName });
+          team && dispatch({ type: "SET_ACTIVE", item: team });
         })
       } catch (err) {
         console.error(err);
@@ -148,7 +148,7 @@ export const Main: React.FunctionComponent<MainProps> = props => {
                 <Profile />
 
                 <LightMode>
-                  <TeamBar ActiveTeam={activeTeam} toLink="/newTeam" />
+                  <TeamBar ActiveTeam={activeTeam.teamName} toLink="/newTeam" />
                 </LightMode>
 
                 <NewGameBar newGameLink="/new" />

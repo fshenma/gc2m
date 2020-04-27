@@ -7,7 +7,7 @@ import debug from "debug";
 import { Link, useRoute, useLocation } from "wouter";
 import { useSession } from "../../../utils/auth";
 import * as firebase from "firebase/app";
-import {getUserFields, updateTeamEntry } from "../../../utils/db";
+import { getUserFields, updateTeamEntry } from "../../../utils/db";
 import orderBy from "lodash.orderby";
 import {
   Text,
@@ -21,31 +21,31 @@ import {
   Skeleton,
   MenuItem
 } from "sancho";
-
+import { TeamType } from "../../../models/Team";
 import usePaginateQuery from "firestore-pagination-hook";
 const log = debug("app:GameList");
 
 type Action<K, V = void> = V extends void ? { type: K } : { type: K } & V;
 
-export interface Team {
-  id: string;
-  teamName: string;
-  teamLocation: string;
-  coach: string;
-  roster: string;   
-  plain: string;
-  updatedAt: any;
-  userId: string;
-  active?: boolean;
-  // image?: string;
-  createdBy?: {
-    email: string;
-    photoURL: string;
-  };
-  // author: string;
-  description: string;
-  // Opponents: Opponent[];
-}
+// export interface Team {
+//   id: string;
+//   teamName: string;
+//   teamLocation: string;
+//   coach: string;
+//   roster: string;
+//   plain: string;
+//   updatedAt: any;
+//   userId: string;
+//   active?: boolean;
+//   // image?: string;
+//   createdBy?: {
+//     email: string;
+//     photoURL: string;
+//   };
+//   // author: string;
+//   description: string;
+//   // Opponents: Opponent[];
+// }
 
 export interface TeamListProps {
   // query: string;
@@ -56,7 +56,7 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
 }) => {
   const theme = useTheme();
   // const [state, dispatch] = React.useReducer(reducer, initialState);  
-  const {user} = useSession();
+  const { user } = useSession();
 
   const {
     loading,
@@ -79,27 +79,27 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
 
   return (
     <div>
-       <div>
-         
-          <List>
-             
-            {orderBy(
-              items,
-              item => item.get("updatedAt").toMillis(),
-              "desc"
-            ).map(g => (
-              <MenuItem>
+      <div>
+
+        <List>
+
+          {orderBy(
+            items,
+            item => item.get("updatedAt").toMillis(),
+            "desc"
+          ).map(g => (
+            <MenuItem>
               <TeamListItem
                 id={g.id}
                 key={g.id}
                 // editable
-                team={g.data() as Team}
+                team={ Object.assign({teamId: g.id}, g.data()) as TeamType}
               />
-              </MenuItem>
-            ))}
-          </List>
+            </MenuItem>
+          ))}
+        </List>
 
-        </div>
+      </div>
       {/* )} */}
     </div>
   );
@@ -107,7 +107,7 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
 
 interface TeamListItemProps {
   // editable?: boolean;
-  team: Team;
+  team: TeamType;
   id: string;
   highlight?: any;
 }
@@ -116,33 +116,50 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   const theme = useTheme();
   const href = `/${id}/${team.teamName}`;
   const [isActive] = useRoute(href);
-  const {user,dispatch} = useSession();
+  const { user, activeTeam, dispatch } = useSession();
   const toast = useToast();
+  const [, params] = useRoute("/:team*");
+  const actTeamId = params.team;
 
   // React.useEffect(() => {
-      
+
   //     team.active && dispatch({type:"SET_ACTIVE",item:team.active});
-      
+
   //   }, [team.active]);
 
-    const  saveActiveTeam = async () => {
+  const saveActiveTeam = async () => {
     log("create entry");
 
     try {
       // const user = useSession();
+      if (activeTeam.teamName !== "my team" && activeTeam.teamName !== team.teamName) {
+        activeTeam.active = false;
+
+        await updateTeamEntry(
+          activeTeam.teamId,
+          {
+            ...activeTeam,
+            createdBy: getUserFields(user),
+          }
+
+        )
+      }
+
       team.active = true;
       await updateTeamEntry(
-        id,
-        {...team,
+        team.teamId,
+        {
+          ...team,
           createdBy: getUserFields(user),
         }
-        
-      );
-      dispatch({type:"SET_ACTIVE",item:team.teamName});
+
+      ).then (
+        dispatch({ type: "SET_ACTIVE", item: team })
+      )
       // setLocation(href);
     } catch (err) {
       console.error(err);
-       
+
       toast({
         title: "An error occurred. Please try again",
         subtitle: err.message,
@@ -154,7 +171,7 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   return (
     <ListItem
       wrap={false}
-      onClick={e => {        
+      onClick={e => {
         saveActiveTeam();
       }}
       aria-current={isActive}
@@ -176,13 +193,13 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
           overflow: "hidden"
         }
       }}
-      
+
       primary={
         highlight ? (
           <span dangerouslySetInnerHTML={{ __html: highlight.title.value }} />
         ) : (
-          team.teamName
-        )
+            team.teamName
+          )
       }
     />
   );

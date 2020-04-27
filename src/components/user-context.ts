@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Team } from "../pages/main/Team";
 
 interface UserContext {
   user?: firebase.User;
@@ -8,7 +9,7 @@ interface UserContext {
 }
 
 export const userContext = React.createContext<UserContext>({
-  activeTeam: ""
+  activeTeam: Team
 });
 
 export const appStateReducer = (state, action) => {
@@ -27,6 +28,6 @@ export const appStateReducer = (state, action) => {
 };
 
 export const initialState = {
-  activeTeam: "my E team",
+  activeTeam: {teamName:"my team"},
    
 };
