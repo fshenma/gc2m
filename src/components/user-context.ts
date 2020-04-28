@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Team } from "../pages/main/Team";
+import { Team } from "../pages/main/components/Team";
 
 interface UserContext {
   user?: firebase.User;

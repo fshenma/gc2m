@@ -16,8 +16,8 @@ export const TeamBar: React.FunctionComponent<TeamBarProps> = ({ActiveTeam, toLi
                 <MenuList>
                     <TeamList />
                     <MenuDivider />
-                    <MenuItem contentBefore={<IconUsers />} component={Link} to={toLink}>Add Team </MenuItem>
-                    <MenuItem contentBefore={<IconEdit />}  >Edit Team </MenuItem>
+                    <MenuItem contentBefore={<IconEdit />}  onPress={() => location.href ="/newTeam"} >Add Team </MenuItem>
+                    <MenuItem contentBefore={<IconEdit />}  onPress={() => location.href ="/editTeam"} >Edit Team </MenuItem>
                 </MenuList>
             }
         >

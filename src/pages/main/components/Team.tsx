@@ -1,16 +1,11 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
-import Editor, { tryValue } from "../../components/Editor";
-import { ImageUpload } from "../../components/ImageUpload";
-import { Image } from "../../components/Image";
+import Editor, { tryValue } from "../../../components/Editor";
 import { Value } from "slate";
 import debug from "debug";
-import {TeamType} from "../../models/Team";
-import "./react-datetime.css";
-import Datetime from "react-datetime";
-import initialValue from "../../value.json";
-// import { Opponent } from "./tabs/GameList";
+import {TeamType} from "../../../models/Team";
+import initialValue from "../../../value.json";
 import {
   Navbar,
   Toolbar,
@@ -31,18 +26,11 @@ import {
   IconArrowLeft,
   Tooltip
 } from "sancho";
-import { getUserFields, createEntry, deleteEntry, updateEntry, createTeamEntry,updateTeamEntry } from "../../utils/db";
-import { useSession } from "../../utils/auth";
+import { getUserFields,   deleteEntry,   createTeamEntry,updateTeamEntry } from "../../../utils/db";
+import { useSession } from "../../../utils/auth";
 import Helmet from "react-helmet";
 import { Link, useLocation } from "wouter";
-import moment from "moment";
-
-let n = 0;
-
-function getHighlightKey() {
-  return `highlight_${n++}`;
-}
-
+  
 const log = debug("app:Compose");
 
 export interface TeamProps {
