@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ResponsivePopover, MenuList, MenuDivider, MenuItem, IconUsers, IconEdit, DarkMode, Button, IconChevronDown } from "sancho";
 import { TeamList } from "./TeamList";
-import { Link} from "wouter";
+import {  useLocation } from "wouter";
 
 interface TeamBarProps {
     ActiveTeam?: string;
@@ -9,6 +9,7 @@ interface TeamBarProps {
   }
   
 export const TeamBar: React.FunctionComponent<TeamBarProps> = ({ActiveTeam, toLink}:TeamBarProps) => {
+    const [, setLocation] = useLocation();
 
     return (
         <ResponsivePopover
@@ -16,8 +17,8 @@ export const TeamBar: React.FunctionComponent<TeamBarProps> = ({ActiveTeam, toLi
                 <MenuList>
                     <TeamList />
                     <MenuDivider />
-                    <MenuItem contentBefore={<IconEdit />}  onPress={() => location.href ="/newTeam"} >Add Team </MenuItem>
-                    <MenuItem contentBefore={<IconEdit />}  onPress={() => location.href ="/editTeam"} >Edit Team </MenuItem>
+                    <MenuItem contentBefore={<IconEdit />}  onPress={() => setLocation("/newTeam")} >Add Team </MenuItem>
+                    <MenuItem contentBefore={<IconEdit />}  onPress={() => setLocation("/editTeam")} >Edit Team </MenuItem>
                 </MenuList>
             }
         >

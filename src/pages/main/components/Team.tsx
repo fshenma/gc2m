@@ -24,7 +24,9 @@ import {
   IconX,
   IconMoreVertical,
   IconArrowLeft,
-  Tooltip
+  Tooltip,
+  IconTrash,
+  IconTrash2
 } from "sancho";
 import { getUserFields,   deleteEntry,   createTeamEntry,updateTeamEntry } from "../../../utils/db";
 import { useSession } from "../../../utils/auth";
@@ -61,7 +63,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
 }) => {
   const theme = useTheme();
   const toast = useToast();
-  const {user} = useSession();
+  const { user, activeTeam, dispatch } = useSession();
    
   // const [gamePlaceholder, setGamePlaceholder] = React.useState("Game Location");
   const [loading, setLoading] = React.useState(false);
@@ -77,7 +79,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
   const [coach, setCoach] = React.useState(defaultCoach);   
   const [roster, setRoster] = React.useState(defaultRoster);
   const [, setLocation] = useLocation();
-
+  
   const ref = React.useRef(null);
   const [hoverOpponent, setHoverOpponent] = React.useState(null);
   const hoverIngredientRef = React.useRef(hoverOpponent);
@@ -87,7 +89,9 @@ export const Team: React.FunctionComponent<TeamProps> = ({
     hoverIngredientRef.current = hoverOpponent;    
   }, [hoverOpponent,teamLocation]);
 
-   
+  React.useEffect(() => {
+    editable && setTeamName(activeTeam.teamName);    
+  },[activeTeam]);
 
   async function saveTeam(newTeam: TeamType) {
     log("create entry");
@@ -303,30 +307,23 @@ export const Team: React.FunctionComponent<TeamProps> = ({
           <div>
             <ResponsivePopover
               content={
-                <MenuList>
-                  <MenuItem
-                    onPress={() => {
-                      setEditing(true);
-                    }}
-                  >
-                    Edit
-                  </MenuItem>
-                  <MenuItem onPress={() => handleDelete(id)}>Delete</MenuItem>
+                <MenuList>                  
+                  <MenuItem onPress={() => handleDelete(id)}>Delete Team</MenuItem>
                 </MenuList>
               }
             >
               <IconButton
                 css={{
-                  display: !editing && editable ? undefined : "none",
+                  display: editable ? undefined : "none",
                   marginLeft: theme.spaces.sm
                 }}
                 variant="ghost"
-                icon={<IconMoreVertical />}
-                label="Show options"
+                icon={<IconTrash2 />}
+                label="Delete"
               />
             </ResponsivePopover>
 
-            {editing && id && (
+            {/* {editable && (
               <Button
                 variant="ghost"
                 css={{
@@ -336,12 +333,12 @@ export const Team: React.FunctionComponent<TeamProps> = ({
                   },
                   marginLeft: theme.spaces.sm
                 }}
-                onPress={() => {setEditing(false);teamLocation===""?setTeamLocation(defaultBostonLocation):teamLocation}}
+                onPress={() => {setEditing(false);}}
               >
-                Cancel
+                Delete
               </Button>
-            )}
-            {editing && (
+            )} */}
+            {editable && (
               <Button
                 intent="primary"
                 disabled={!teamName}

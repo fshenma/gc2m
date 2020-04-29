@@ -30,7 +30,7 @@ interface MainContentProps {
       return <Team />;
     }
     else if (id === "editTeam") {
-      return <Team />;
+      return <Team editable={true} />;
     }
     return <Game id={id} />;
   }
