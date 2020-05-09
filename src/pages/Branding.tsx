@@ -56,10 +56,10 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
                 width: "30px",
                 height: "30px"
               }}
-              src={food}
+              // src={food}
               aria-hidden
             />
-            <span>Julienne.app</span>
+            <span>GameScore.app</span>
           </Text>
           <div css={{ marginLeft: "auto" }}>
             <Button
@@ -108,7 +108,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
           }}
           variant="display2"
         >
-          The easiest way to share recipes with family and friends
+          Game
         </Text>
 
         <div
@@ -161,28 +161,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
               }
             }}
           >
-            <img
-              css={{
-                width: "60px",
-                height: "60px",
-                borderRadius: "50%",
-                position: "absolute",
-                flex: "0 0 60px",
-                display: "none",
-                bottom: "-25px",
-                left: "-80px",
-                [theme.mediaQueries.md]: {
-                  display: "block"
-                }
-              }}
-              src="https://pbs.twimg.com/profile_images/775452326450475009/MTsFSYGs_400x400.jpg"
-              alt="Ben"
-            />
-            Hey! My name's Ben. I was getting tired of losing recipes in my
-            inbox and nagging friends and family for their recipes, so I created
-            this little app. It's a simple tool to help my family maintain a
-            shared, searchable database of recipes. Give it a try, and happy
-            cooking! 😋
+                        
           </Text>
           <div
             css={{
@@ -219,7 +198,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
             component={RouterLink}
             to="/login?register=true"
           >
-            Create your first recipe
+            Game Score
           </Button>
         </div>
 
@@ -282,9 +261,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
               </svg>
               <Text variant="h4">Save</Text>
               <Text>
-                Write out your recipes and access them from anywhere. Find your
-                recipes on the road, at a friend's place, or in the comfort of
-                your own kitchen.
+                Game Score
               </Text>
             </div>
 
@@ -300,9 +277,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
               </svg>
               <Text variant="h4">Share</Text>
               <Text>
-                Easily share recipes with family and friends by creating a
-                shared recipe collection. Trust me, it beats emailing recipes.
-                And it's super easy to find them again later.
+               Game Score
               </Text>
             </div>
 
@@ -325,9 +300,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
               </svg>
               <Text variant="h4">Search</Text>
               <Text>
-                Search for recipes by ingredient, name, or author. It's really,
-                really fast - at least a tad faster than flipping through your
-                overflowing recipe box.
+                Search for game
               </Text>
             </div>
           </div>
@@ -370,11 +343,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
               fontSize: theme.fontSizes[0]
             }}
           >
-            Made by <Link href="http://www.benmcmahen.com">Ben McMahen</Link>
-            <br />
-            <Link href="mailto:ben.mcmahen@gmail.com">Email me</Link> with
-            questions or whatevs!
-            <br />
+            
             <div>
               Icons made by{" "}
               <Link

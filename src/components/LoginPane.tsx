@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import { Redirect, Link } from "wouter";
-import food from "../images/food.svg";
+import game from "../images/game.svg";
 import {
   useTheme,
   Layer,
@@ -111,10 +111,10 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                   width: "75px",
                   height: "75px"
                 }}
-                src={food}
+                src={game}
                 aria-hidden
               />
-              <div css={{ marginTop: theme.spaces.sm }}>Julienne.app</div>
+              <div css={{ marginTop: theme.spaces.sm }}>GameScore.app</div>
             </Text>
           </Link>
           <Layer
