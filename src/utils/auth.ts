@@ -2,11 +2,31 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import { useContext } from "react";
 import { userContext } from "../components/user-context";
+import { getActiveTeam } from "./db";
+import { TeamType } from "../models/Team";
+import React from "react";
 
 const provider = new firebase.auth.GoogleAuthProvider();
 
 export const useSession = () => {
   const { user, activeTeam, dispatch} = useContext(userContext);
+
+  const loadActiveTeam = async  () => {
+    try {
+      // setActiveTeam(decodeURI(actTeam));
+      await getActiveTeam(user).then(data => {
+        const team = data.docs[0].data() as TeamType
+        team && dispatch({ type: "SET_ACTIVE", item: team });
+      })
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  
+  React.useEffect(() => {    
+    loadActiveTeam();
+  }, []);
+  
   return { user, activeTeam,dispatch };
 };
 
