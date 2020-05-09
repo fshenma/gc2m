@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import firebase from "firebase/app";
-import { Compose } from "../Compose";
+import { Compose } from "./Compose";
 import { useSession } from "../../../utils/auth";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { useTheme, Text } from "sancho";

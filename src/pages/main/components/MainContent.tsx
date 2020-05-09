@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Compose } from "../Compose";
+import { Compose } from "./Compose";
 import { Team } from "./Team";
 import { Game } from "./Game";
 

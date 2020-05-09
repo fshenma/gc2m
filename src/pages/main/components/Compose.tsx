@@ -1,15 +1,15 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
-import Editor, { tryValue } from "../../components/Editor";
-import { ImageUpload } from "../../components/ImageUpload";
-import { Image } from "../../components/Image";
+import Editor, { tryValue } from "../../../components/Editor";
+import { ImageUpload } from "../../../components/ImageUpload";
+import { Image } from "../../../components/Image";
 import { Value } from "slate";
 import debug from "debug";
-import { Game, Opponent } from "../../models/Game";
+import { Game, Opponent } from "../../../models/Game";
 import "./react-datetime.css";
 import Datetime from "react-datetime";
-import initialValue from "../../value.json";
+import initialValue from "../../../value.json";
 // import { Opponent } from "./tabs/GameList";
 import {
   Navbar,
@@ -31,8 +31,8 @@ import {
   IconArrowLeft,
   Tooltip
 } from "sancho";
-import { getUserFields, createEntry, deleteEntry, updateEntry } from "../../utils/db";
-import { useSession } from "../../utils/auth";
+import { getUserFields, createEntry, deleteEntry, updateEntry } from "../../../utils/db";
+import { useSession } from "../../../utils/auth";
 import Helmet from "react-helmet";
 import { Link, useLocation } from "wouter";
 import moment from "moment";
