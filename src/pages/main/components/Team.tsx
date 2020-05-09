@@ -20,15 +20,12 @@ import {
   useToast,
   LayerLoading,
   Container,
-  ResponsivePopover,
-  IconX,
-  IconMoreVertical,
+  ResponsivePopover,   
   IconArrowLeft,
-  Tooltip,
-  IconTrash,
+  Tooltip,  
   IconTrash2
 } from "sancho";
-import { getUserFields,   deleteEntry,   createTeamEntry,updateTeamEntry } from "../../../utils/db";
+import { getUserFields,   deleteEntry,   createTeamEntry,updateTeamEntry, deleteTeamEntry } from "../../../utils/db";
 import { useSession } from "../../../utils/auth";
 import Helmet from "react-helmet";
 import { Link, useLocation } from "wouter";
@@ -73,6 +70,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
       ? tryValue(defaultNotes)
       : Value.fromJSON(initialValue);
   });
+  const [teamID, setTeamId] = React.useState();
   const [teamName, setTeamName] = React.useState(defaultTeamName);
   const defaultBostonLocation= "Boston, MA";
   const [teamLocation, setTeamLocation] = React.useState(defaultTeamLocation);  
@@ -90,7 +88,14 @@ export const Team: React.FunctionComponent<TeamProps> = ({
   }, [hoverOpponent,teamLocation]);
 
   React.useEffect(() => {
-    editable && setTeamName(activeTeam.teamName);    
+    if (editable) {
+      setTeamId(activeTeam.teamID);
+      setTeamName(activeTeam.teamName);    
+      setTeamLocation(activeTeam.teamLocation);  
+      setCoach(activeTeam.coach);
+      setRoster(activeTeam.roster);
+      // setContent(activeTeam.description);
+    }
   },[activeTeam]);
 
   async function saveTeam(newTeam: TeamType) {
@@ -120,13 +125,13 @@ export const Team: React.FunctionComponent<TeamProps> = ({
     team: TeamType
   ) {
     log("update entry: %s", id);
-    setLoading(true);
+    // setLoading(true);
     try {
       await updateTeamEntry(id, {
         ...team,
         createdBy: getUserFields(user),    
       });
-      setEditing(false);
+      setLocation("/", { replace: true });
     } catch (err) {
       console.error(err);
       toast({
@@ -135,7 +140,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
         intent: "danger"
       });
     }
-    setLoading(false);
+    // setLoading(false);
   }
 
   function renderAnnotation(props, editor, next) {
@@ -176,7 +181,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
   async function handleDelete(id: string) {
     try {
       setLoading(true);
-      await deleteEntry(id);
+      await deleteTeamEntry(id);
       setLocation("/", { replace: true });
     } catch (err) {
       console.error(err);
@@ -308,7 +313,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
             <ResponsivePopover
               content={
                 <MenuList>                  
-                  <MenuItem onPress={() => handleDelete(id)}>Delete Team</MenuItem>
+                  <MenuItem onPress={() => handleDelete(activeTeam.teamId)}>Delete Team</MenuItem>
                 </MenuList>
               }
             >
@@ -355,7 +360,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
                     plain: text,                              
                   };
 
-                  id ? updateTeam(id, toSave) : saveTeam(toSave);
+                  activeTeam.teamId ? updateTeam(activeTeam.teamId, toSave) : saveTeam(toSave);
                 }}
               >
                 Save

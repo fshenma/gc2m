@@ -115,6 +115,14 @@ export const createTeamEntry = (options: TeamOptions) => {
   });
 };
 
+export const getGames = (user, teamId) => {
+   
+  return db.collection("scores")
+  .where("userId", "==", user!.uid)
+  .where("teamId", "==", teamId)
+  .get();   
+};
+
 interface GameUpdateOptions {
   title: string;
   author: string;
@@ -159,6 +167,14 @@ export const updateTeamEntry = (id: string, options: TeamUpdateOptions) => {
       ...omitBy(options, isNil),
       // image: options.image || firebase.firestore.FieldValue.delete()
     });
+};
+
+export const deleteTeamEntry = (id: string) => {
+  log("delete: %s", id);
+  return db
+    .collection("teams")
+    .doc(id)
+    .delete();
 };
 
 export const deleteEntry = (id: string) => {

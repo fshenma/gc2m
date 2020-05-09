@@ -22,6 +22,7 @@ import {Opponent} from "../../../models/Game"
 import { useFirebaseImage } from "../../../components/Image";
 import { FadeImage } from "../../../components/FadeImage";
 import usePaginateQuery from "firestore-pagination-hook";
+import { getGames } from "../../../utils/db";
 const log = debug("app:GameList");
 
 // export interface Opponent {
@@ -85,41 +86,74 @@ export const GameList: React.FunctionComponent<GameListProps> = ({
   query
 }) => {
   const theme = useTheme();
+  const [loading, setLoading] = React.useState(true);
+  const [items, setItems] = React.useState(null);
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const {user} = useSession();
+  const {user, activeTeam} = useSession();
+  const [teamId, setTeamId] = React.useState();
 
-  const {
-    loading,
-    loadingError,
-    loadingMore,
-    loadingMoreError,
-    hasMore,
-    items,
-    loadMore
-  } = usePaginateQuery(
-    firebase
-      .firestore()
-      .collection("scores")
-      .where("userId", "==", user!.uid)
-      .orderBy("updatedAt", "desc"),
-    {
-      limit: 25
-    }
-  );
+  // const {
+  //   loading,
+  //   loadingError,
+  //   loadingMore,
+  //   loadingMoreError,
+  //   hasMore,
+  //   items,
+  //   loadMore
+  // } = usePaginateQuery(
+  //   firebase
+  //     .firestore()
+  //     .collection("scores")
+  //     .where("userId", "==", user!.uid)
+  //     .where("teamId", "==", "")
+  //     .orderBy("updatedAt", "desc"),
+  //   {
+  //     limit: 25
+  //   }
+  // );
 
   // perform an algolia query when query changes
-  React.useEffect(() => {
-    if (query) {
-      log("query: %s", query);
+  // React.useEffect(() => {
+    // if (query) {
+      // log("query: %s", query);
       // algolia.search(query).then(results => {
       //   log("results: %o", results);
       //   dispatch({
       //     type: "SEARCH",
       //     value: results
       //   });
-      // });
+      // });      
+  //     const t = activeTeam.teamId;
+  // }, []);
+  // }, [query]);
+
+  React.useEffect(() => {
+    
+    
+    activeTeam && setTeamId(activeTeam.teamId);
+      
+  }, [activeTeam]);
+ 
+
+  React.useEffect(() => {
+    
+    teamId && loadGames(teamId);
+     
+      
+  }, [teamId]);
+
+  const loadGames = async  (teamId) => {
+    try {
+      // setActiveTeam(decodeURI(actTeam));
+      await getGames(user, teamId).then(data => {
+        const games = data.docs;
+        setLoading(false);
+        setItems(games);
+      })
+    } catch (err) {
+      console.error(err);
     }
-  }, [query]);
+  }
 
   // retrieve our algolia search index on mount
   // React.useEffect(() => {
@@ -144,7 +178,7 @@ export const GameList: React.FunctionComponent<GameListProps> = ({
         </div>
       ) : (
         <div>
-          {!loading && items.length === 0 && (
+          {!loading && items && items.length === 0 && (
             <Text
               muted
               css={{
@@ -153,7 +187,7 @@ export const GameList: React.FunctionComponent<GameListProps> = ({
                 margin: theme.spaces.lg
               }}
             >
-              You have no recipes listed. Create your first by clicking the plus
+              You have no games listed. Create your first by clicking the plus
               arrow above.
             </Text>
           )}
@@ -203,10 +237,10 @@ export const GameList: React.FunctionComponent<GameListProps> = ({
             ))}
           </List>
 
-          {loadingMore && <Spinner />}
-          {loadingError || (loadingMoreError && <div>Loading error...</div>)}
+          {/* {loadingMore && <Spinner />}
+          {loadingError || (loadingMoreError && <div>Loading error...</div>)} */}
 
-          {hasMore && !loadingMore && (
+          {/* {hasMore && !loadingMore && (
             <div
               css={{
                 textAlign: "center",
@@ -222,7 +256,7 @@ export const GameList: React.FunctionComponent<GameListProps> = ({
                 Load more
               </Button>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>

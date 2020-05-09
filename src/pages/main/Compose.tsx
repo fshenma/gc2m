@@ -77,7 +77,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
 }) => {
   const theme = useTheme();
   const toast = useToast();
-  const {user} = useSession();
+  const {user, activeTeam} = useSession();
    
   // const [gamePlaceholder, setGamePlaceholder] = React.useState("Game Location");
   const [loading, setLoading] = React.useState(false);
@@ -437,6 +437,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   const current = ref.current as any;
                   const { text, content } = current.serialize();
                   const toSave = {
+                    teamId: activeTeam.teamId,
                     title,
                     gameDate: gameDateTime.toUTCString(),
                     gameLocation,

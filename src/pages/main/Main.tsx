@@ -57,19 +57,19 @@ export const Main: React.FunctionComponent<MainProps> = props => {
 
   const renderList = isLarge || !showingGame;
 
-  React.useEffect(() => {
-    async function loadActiveTeam() {
-      try {
-        // setActiveTeam(decodeURI(actTeam));
-        await getActiveTeam(user).then(data => {
-          const team = data.docs[0].data() as TeamType
-          team && dispatch({ type: "SET_ACTIVE", item: team });
-        })
-      } catch (err) {
-        console.error(err);
-      }
+  const loadActiveTeam = async  () => {
+    try {
+      // setActiveTeam(decodeURI(actTeam));
+      await getActiveTeam(user).then(data => {
+        const team = data.docs[0].data() as TeamType
+        team && dispatch({ type: "SET_ACTIVE", item: team });
+      })
+    } catch (err) {
+      console.error(err);
     }
-
+  }
+  
+  React.useEffect(() => {    
     loadActiveTeam();
   }, []);
 

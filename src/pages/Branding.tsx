@@ -86,7 +86,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = () => {
             background: "white",
             [theme.mediaQueries.md]: {
               backgroundSize: "cover",
-              backgroundImage: `url(${require("../images/cutting-board-knife.jpg")})`
+              backgroundImage: `url(${require("../images/blue_abstract.jpg")})`
             }
           },
           responsiveBodyPadding
