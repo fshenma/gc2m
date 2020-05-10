@@ -11,6 +11,7 @@ import { useRoute } from "wouter";
 import { Layout } from "../../components/Layout";
 import { MainContent } from "./components/MainContent";
 import { MainControl } from "./components/MainControl";
+import { useState, useEffect } from "react";
 
 export interface MainProps {
   path?: string;
@@ -20,7 +21,8 @@ export interface MainProps {
 export const Main: React.FunctionComponent<MainProps> = props => {
   const theme = useTheme();
   const [, params] = useRoute("/:game*");
-  const showingGame = params.game;
+  const [showingGame, setShowingGame] = useState("");
+  // const showingGame = params.game;
 
 
   // i'm disabling this for now, since it was running really poorly. unsure
@@ -33,7 +35,9 @@ export const Main: React.FunctionComponent<MainProps> = props => {
   //   immediate: !isLarge
   // });
 
-  
+  useEffect (() => {
+    setShowingGame(params.game);
+  },[params])
 
   return (
     <Layout>

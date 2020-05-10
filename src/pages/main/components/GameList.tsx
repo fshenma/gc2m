@@ -164,6 +164,7 @@ export const GameList: React.FunctionComponent<GameListProps> = ({
     <div>
       {query && state.searchResponse ? (
         <div>
+          
           <List>
             {state.searchResponse.hits.map(hit => (
               <GameListItem
@@ -287,7 +288,7 @@ export function GameListItem({ game, id, highlight }: GameListItemProps) {
       aria-current={isActive}
       href={`/${id}`}
       css={{
-        paddingTop: 0,
+        paddingTop: 20,
         paddingBottom: 0,
         height: "56px",
         alignItems: "center",

@@ -273,7 +273,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   }
 
   return (
-    <div
+    <div id={id}
       css={{
         [theme.mediaQueries.md]: {
           height: "auto",

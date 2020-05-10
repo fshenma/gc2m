@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Layer, DarkMode, Tabs, Tab, Pager, TabPanel, useTheme } from "sancho";
-import { useRoute } from "wouter";
+import { useRoute ,useLocation} from "wouter";
 import { MainNavBar } from "./MainNavBar";
 import { GameList } from "./GameList";
 import { FollowingList } from "../tabs/FollowingList";
@@ -17,7 +17,8 @@ export const MainControl = () => {
     const [, params] = useRoute("/:game*");
     const showingGame = params.game;
     const [query, setQuery] = React.useState("");
-    
+    const [, setLocation] = useLocation();
+
     const renderList = isLarge || !showingGame;
 
     return (
@@ -82,7 +83,7 @@ export const MainControl = () => {
                     top: 0,
                     background: theme.colors.palette.gray.base
                   }}
-                  onChange={i => setActiveTab(i)}
+                  onChange={i => {setLocation("/");setActiveTab(i)}}
                   value={activeTab}
                   variant="evenly-spaced"
                 >
@@ -122,7 +123,8 @@ export const MainControl = () => {
                 display: "flex",
                 flexDirection: "column",
                 flex: 1,
-                minHeight: 0
+                // minHeight: 0,
+                
               }}
               id="games"
             >

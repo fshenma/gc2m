@@ -120,7 +120,8 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   const toast = useToast();
   const [, params] = useRoute("/:team*");
   const actTeamId = params.team;
-
+  const [, setLocation] = useLocation();
+  
   // React.useEffect(() => {
 
   //     team.active && dispatch({type:"SET_ACTIVE",item:team.active});
@@ -155,8 +156,8 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
 
       ).then (
         dispatch({ type: "SET_ACTIVE", item: team })
-      )
-      // setLocation(href);
+        
+      )      
     } catch (err) {
       console.error(err);
 
@@ -172,6 +173,7 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
     <ListItem
       wrap={false}
       onClick={e => {
+        setLocation("/");
         saveActiveTeam();
       }}
       aria-current={isActive}
