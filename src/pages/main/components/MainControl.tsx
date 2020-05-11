@@ -2,9 +2,9 @@ import * as React from "react";
 import { Layer, DarkMode, Tabs, Tab, Pager, TabPanel, useTheme } from "sancho";
 import { useRoute ,useLocation} from "wouter";
 import { MainNavBar } from "./MainNavBar";
-import { GameList } from "./GameList";
-import { FollowingList } from "../tabs/FollowingList";
-import { FollowersList } from "../tabs/FollowersList";
+import { GameList } from "../tabs/GameList";
+import { PracticesList } from "../tabs/PracticesList";
+import { MessagesList } from "../tabs/MessagesList";
 import { useFollowRequests } from "../../../hooks/with-follow-request-count";
 import useMedia from "use-media";
 
@@ -132,11 +132,11 @@ export const MainControl = () => {
             </TabPanel>
 
             <TabPanel css={{ height: "100%" }} id="following">
-              <FollowingList />
+              <PracticesList />
             </TabPanel>
 
-            <TabPanel id="followers">
-              <FollowersList />
+            <TabPanel css={{ height: "100%" }} id="followers">
+              <MessagesList />
             </TabPanel>
 
           </Pager>

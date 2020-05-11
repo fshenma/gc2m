@@ -46,10 +46,10 @@ function searchAlgoliaForUsers(query: string) {
 
 const log = debug("app:FollowingList");
 
-export interface FollowingListProps {}
+export interface PracticesListProps {}
 
-export const FollowingList: React.FunctionComponent<
-  FollowingListProps
+export const PracticesList: React.FunctionComponent<
+  PracticesListProps
 > = props => {
   const theme = useTheme();
   const toast = useToast();

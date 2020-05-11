@@ -19,10 +19,10 @@ import {
 } from "sancho";
 import { confirmFollow, deleteRequestFollow } from "../../../utils/db";
 
-export interface FollowersListProps {}
+export interface MessagesListProps {}
 
-export const FollowersList: React.FunctionComponent<
-  FollowersListProps
+export const MessagesList: React.FunctionComponent<
+  MessagesListProps
 > = props => {
   const theme = useTheme();
   const toast = useToast();
