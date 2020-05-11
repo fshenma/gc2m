@@ -288,7 +288,7 @@ export function GameListItem({ game, id, highlight }: GameListItemProps) {
       aria-current={isActive}
       href={`/${id}`}
       css={{
-        paddingTop: 20,
+        paddingTop: 0,
         paddingBottom: 0,
         height: "56px",
         alignItems: "center",
