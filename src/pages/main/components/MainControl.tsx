@@ -135,7 +135,7 @@ export const MainControl = () => {
               <PracticesList />
             </TabPanel>
 
-            <TabPanel id="followers">
+            <TabPanel css={{ height: "100%" }} id="followers">
               <MessagesList />
             </TabPanel>
 
