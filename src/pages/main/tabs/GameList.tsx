@@ -288,7 +288,7 @@ export function GameListItem({ game, id, highlight }: GameListItemProps) {
       aria-current={isActive}
       href={`/${id}`}
       css={{
-        paddingTop: 20,
+        paddingTop: 0,
         paddingBottom: 0,
         height: "56px",
         alignItems: "center",
@@ -298,7 +298,7 @@ export function GameListItem({ game, id, highlight }: GameListItemProps) {
           fontStyle: "normal",
           color: theme.colors.text.selected
         },
-        backgroundColor: isActive ? theme.colors.background.tint1 : null,
+        backgroundColor:  theme.colors.background.tint1 ,
         "& > *": {
           flex: 1,
           overflow: "hidden"

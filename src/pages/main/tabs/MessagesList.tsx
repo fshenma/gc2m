@@ -81,6 +81,23 @@ export const MessagesList: React.FunctionComponent<
       {loading && (
         <React.Fragment>
           <ListItem
+            css={{
+              paddingTop: 0,
+              paddingBottom: 0,
+              height: "56px",
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "space-between",
+              "& em": {
+                fontStyle: "normal",
+                color: theme.colors.text.selected
+              },
+              backgroundColor:  theme.colors.background.tint1 ,
+              "& > *": {
+                flex: 1,
+                overflow: "hidden"
+              }
+            }}
             interactive={false}
             contentBefore={
               <Skeleton
