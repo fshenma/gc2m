@@ -5,6 +5,7 @@ interface UserContext {
   user?: firebase.User;
   initialising?: boolean;
   activeTeam?: any;
+  activeTab?: string;
   dispatch?: any
 }
 

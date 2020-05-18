@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import * as React from "react";
-import { useFollowers } from "../../../hooks/with-follow-request-count";
+import { usePractices } from "../../../hooks/with-practices-request";
 import {
   List,
   ListItem,
@@ -54,7 +54,7 @@ export const PracticesList: React.FunctionComponent<
   const theme = useTheme();
   const toast = useToast();
   const {user} = useSession();
-  const { loading, userList } = useFollowers(false);
+  const { loading, practiceList } = usePractices(false);
   const [query, setQuery] = React.useState("");
   const [
     queryResults,
@@ -76,10 +76,10 @@ export const PracticesList: React.FunctionComponent<
             return false;
           }
 
-          return !find(userList, { toUserId: hit.objectID });
+          return !find(practiceList, { toUserId: hit.objectID });
         })
         .map(hit => {
-          const relation = find(userList, { toUserId: hit.objectID });
+          const relation = find(practiceList, { toUserId: hit.objectID });
 
           return {
             ...hit,
@@ -94,7 +94,7 @@ export const PracticesList: React.FunctionComponent<
     }
 
     fetchUsers();
-  }, [query, userList]);
+  }, [query, practiceList]);
 
   async function inviteUser(otherUser: any) {
     try {
@@ -129,7 +129,7 @@ export const PracticesList: React.FunctionComponent<
     }
   }
 
-  const noUsers = !query && (!userList || (userList && userList.length === 0));
+  const noUsers = !query && (!practiceList || (practiceList && practiceList.length === 0));
 
   const [index, setIndex] = React.useState(0);
   const [relation, setRelation] = React.useState(null);
@@ -239,7 +239,7 @@ export const PracticesList: React.FunctionComponent<
                         }
                       />
                     ))}
-                  {userList.map(relation => {
+                  {practiceList.map(relation => {
                     return (
                       <ListItem
                         key={relation.id}

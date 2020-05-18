@@ -31,7 +31,7 @@ export const MainNavBar = () => {
                   <TeamBar ActiveTeam={activeTeam.teamName} toLink="/newTeam" />
                 </LightMode>
 
-                <NewGameBar newGameLink="/new" />
+                <NewGameBar newTgtLink="/new" />
 
               </Toolbar>
             </Navbar>

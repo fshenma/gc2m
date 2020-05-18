@@ -1,23 +1,24 @@
 import * as React from "react";
 import { Tooltip, DarkMode, IconButton, IconPlus } from "sancho";
 import { Link } from "wouter";
+import { useState } from "react";
 
 interface NewGameBarProps {     
-    newGameLink?: string;
+    newTgtLink?: string;
   }
 
-export const NewGameBar: React.FunctionComponent<NewGameBarProps>= ({newGameLink}:NewGameBarProps) => {
-
+export const NewGameBar: React.FunctionComponent<NewGameBarProps>= ({newTgtLink}:NewGameBarProps) => {
+    const [target, setTarget] = useState("game");
 
     return (
-        <Tooltip content="Add a new game">
+        <Tooltip content={`Add a new ${target}`}>
             <div>
                 <DarkMode>
                     <IconButton
                         component={Link}
-                        to={newGameLink}
+                        to={newTgtLink}
                         variant="ghost"
-                        label="Add game"
+                        label= {`Add ${target}`}
                         size="md"
                         icon={<IconPlus />}
                     />
