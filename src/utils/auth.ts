@@ -9,7 +9,7 @@ import React from "react";
 const provider = new firebase.auth.GoogleAuthProvider();
 
 export const useSession = () => {
-  const { user, activeTeam, dispatch} = useContext(userContext);
+  const { user, activeTeam, curTab, dispatch} = useContext(userContext);
 
   const loadActiveTeam = async  () => {
     try {
@@ -27,7 +27,7 @@ export const useSession = () => {
     loadActiveTeam();
   }, []);
   
-  return { user, activeTeam,dispatch };
+  return { user, activeTeam, curTab, dispatch };
 };
 
 export const loginWithGoogle = async () => {

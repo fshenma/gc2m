@@ -7,6 +7,7 @@ import { PracticesList } from "../tabs/PracticesList";
 import { MessagesList } from "../tabs/MessagesList";
 import { useFollowRequests } from "../../../hooks/with-follow-request-count";
 import useMedia from "use-media";
+import { useSession } from "../../../utils/auth";
 
 
 export const MainControl = () => {
@@ -17,9 +18,13 @@ export const MainControl = () => {
     const [, params] = useRoute("/:game*");
     const showingGame = params.game;
     const [query, setQuery] = React.useState("");
+    const {  dispatch } = useSession();
     const [, setLocation] = useLocation();
+    const tabList = ["Game", "Practice","Message"];
 
     const renderList = isLarge || !showingGame;
+
+    const lowerLize = (str) => {return str.charAt(0).toLowerCase() + str.slice(1)};
 
     return (
         
@@ -83,21 +88,21 @@ export const MainControl = () => {
                     top: 0,
                     background: theme.colors.palette.gray.base
                   }}
-                  onChange={i => {setLocation("/");setActiveTab(i)}}
+                  onChange={i => {setLocation("/");setActiveTab(i);dispatch({ type: "SET_TARGET", item: lowerLize(tabList[i]) });}}
                   value={activeTab}
                   variant="evenly-spaced"
                 >
-                  <Tab id="games">Games</Tab>
-                  <Tab id="following">Practices</Tab>
+                  <Tab id={lowerLize(tabList[0])}>{tabList[0]}s</Tab>
+                  <Tab id={lowerLize(tabList[1])}>{tabList[1]}s</Tab>
                   <Tab
                     badge={
                       followRequests && followRequests.docs.length
                         ? followRequests.docs.length
                         : null
                     }
-                    id="followers"
+                    id={lowerLize(tabList[2])}
                   >
-                    Messages                
+                    {tabList[2]}s
                   </Tab>
                 </Tabs>
               </DarkMode>

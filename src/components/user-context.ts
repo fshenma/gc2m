@@ -1,16 +1,16 @@
 import * as React from "react";
-import { Team } from "../pages/main/components/Team";
+// import { Team } from "../pages/main/components/Team";
 
 interface UserContext {
   user?: firebase.User;
   initialising?: boolean;
   activeTeam?: any;
-  activeTab?: string;
+  curTab?: string;
   dispatch?: any
 }
 
 export const userContext = React.createContext<UserContext>({
-  activeTeam: Team
+  // activeTeam: Team
 });
 
 export const appStateReducer = (state, action) => {
@@ -22,7 +22,13 @@ export const appStateReducer = (state, action) => {
         activeTeam: action.item,        
       };
     }
-    
+    case "SET_TARGET": {
+       
+      return {
+        ...state,
+        curTab: action.item,        
+      };
+    }
     default:
       return state;
   }
@@ -30,5 +36,5 @@ export const appStateReducer = (state, action) => {
 
 export const initialState = {
   activeTeam: {teamName:"my team"},
-   
+  curTab: "game"
 };

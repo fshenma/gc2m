@@ -61,6 +61,7 @@ function App() {
         user: user,
         initialising,
         activeTeam: teamState.activeTeam,
+        curTab: teamState.curTab,
         dispatch
       }}
     >
