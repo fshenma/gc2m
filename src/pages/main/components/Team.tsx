@@ -70,7 +70,7 @@ export const Team: React.FunctionComponent<TeamProps> = ({
       ? tryValue(defaultNotes)
       : Value.fromJSON(initialValue);
   });
-  const [teamI, setTeamId] = React.useState();
+  const [teamID, setTeamId] = React.useState();
   const [teamName, setTeamName] = React.useState(defaultTeamName);
   const defaultBostonLocation= "Boston, MA";
   const [teamLocation, setTeamLocation] = React.useState(defaultTeamLocation);  

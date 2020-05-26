@@ -88,6 +88,27 @@ export const createEntry = (options: GameOptions) => {
   });
 };
 
+export interface PracticeOptions {
+  title: string;
+  plain: string;
+  userId: string;
+  description: string;
+  image?: string;
+  createdBy?: {
+    email: string;
+    photoURL: string;
+  };
+  Opponents: Opponent[];
+}
+
+export const createPracticeEntry = (options: PracticeOptions) => {
+  log("save Practice: %o", options);
+  return db.collection("practices").add({
+    ...omitBy(options, isNil),
+    updatedAt: firebase.firestore.Timestamp.fromDate(new Date())
+  });
+};
+
 export const getActiveTeam = (user) => {
    
   return db.collection("teams")
@@ -139,6 +160,28 @@ interface GameUpdateOptions {
 export const updateEntry = (id: string, options: GameUpdateOptions) => {
   return db
     .collection("scores")
+    .doc(id)
+    .update({
+      ...omitBy(options, isNil),
+      image: options.image || firebase.firestore.FieldValue.delete()
+    });
+};
+
+interface PracticeUpdateOptions {
+  title: string;
+  description: string;
+  image?: string;
+  createdBy?: {
+    email: string;
+    photoURL: string;
+  };
+  plain: string;
+  Opponents: Opponent[];
+}
+
+export const updatePracticeEntry = (id: string, options: PracticeUpdateOptions) => {
+  return db
+    .collection("practices")
     .doc(id)
     .update({
       ...omitBy(options, isNil),

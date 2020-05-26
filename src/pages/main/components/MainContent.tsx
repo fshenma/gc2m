@@ -1,5 +1,7 @@
 import * as React from "react";
 import { Compose } from "./Compose";
+import { Practice } from "./Practice";
+import { Message } from "./Message";
 import { Team } from "./Team";
 import { Game } from "./Game";
 
@@ -25,6 +27,12 @@ interface MainContentProps {
   
     if (id === "new") {
       return <Compose />;
+    }
+    if (id === "newpractice") {
+      return <Practice />;
+    }
+    if (id === "newmessage") {
+      return <Message />;
     }
     else if (id === "newTeam") {
       return <Team />;

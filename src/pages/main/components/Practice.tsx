@@ -6,7 +6,7 @@ import { ImageUpload } from "../../../components/ImageUpload";
 import { Image } from "../../../components/Image";
 import { Value } from "slate";
 import debug from "debug";
-import { Game, Opponent } from "../../../models/Game";
+import { PracticeType, Opponent } from "../../../models/PracticeType";
 import "./react-datetime.css";
 import Datetime from "react-datetime";
 import initialValue from "../../../value.json";
@@ -31,7 +31,7 @@ import {
   IconArrowLeft,
   Tooltip
 } from "sancho";
-import { getUserFields, createEntry, deleteEntry, updateEntry } from "../../../utils/db";
+import { getUserFields, createPracticeEntry, deleteEntry, updatePracticeEntry } from "../../../utils/db";
 import { useSession } from "../../../utils/auth";
 import Helmet from "react-helmet";
 import { Link, useLocation } from "wouter";
@@ -45,13 +45,13 @@ function getHighlightKey() {
 
 const log = debug("app:Compose");
 
-export interface ComposeProps {
+export interface PracticeProps {
   id?: string;
   defaultTitle?: string;
   defaultImage?: string;
   defaultDescription?: string;
-  defaultGameDate?:Date;
-  defaultGameLocation?:string;
+  defaultPracticeDate?:Date;
+  defaultPracticeLocation?:string;
   defaultOpponents?: Opponent[];
   readOnly?: boolean;
   editable?: boolean;
@@ -63,13 +63,13 @@ export interface ComposeProps {
  * @param param0
  */
 
-export const Compose: React.FunctionComponent<ComposeProps> = ({
+export const Practice: React.FunctionComponent<PracticeProps> = ({
   readOnly,
   id,
   editable,
   defaultCredit = "",
-  defaultGameDate, 
-  defaultGameLocation="",
+  defaultPracticeDate, 
+  defaultPracticeLocation,
   defaultDescription,
   defaultImage,
   defaultOpponents,
@@ -78,8 +78,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   const theme = useTheme();
   const toast = useToast();
   const {user, activeTeam} = useSession();
-   
-  // const [gamePlaceholder, setGamePlaceholder] = React.useState("Game Location");
+      
   const [loading, setLoading] = React.useState(false);
   const [editing, setEditing] = React.useState(!readOnly);
   const [content, setContent] = React.useState(() => {
@@ -89,9 +88,9 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   });
   const [image, setImage] = React.useState(defaultImage);
   const [title, setTitle] = React.useState(defaultTitle);
-  const [gameDateTime, setGameDateTime] = React.useState(defaultGameDate);
+  const [practiceDateTime, setPracticeDateTime] = React.useState(defaultPracticeDate);
   const defaultBostonLocation= "Boston, MA";
-  const [gameLocation, setGameLocation] = React.useState(defaultGameLocation);  
+  const [practiceLocation, setPracticeLocation] = React.useState(defaultPracticeLocation);  
   
   const [credit, setCredit] = React.useState(defaultCredit);
   const [Opponents, setOpponents] = React.useState<Opponent[]>(
@@ -109,9 +108,9 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   const hoverIngredientRef = React.useRef(hoverOpponent);
 
   React.useEffect(() => {
-    typeof(gameLocation) === "undefined"?setGameLocation(defaultBostonLocation):gameLocation;
+    typeof(practiceLocation) === "undefined"?setPracticeLocation(defaultBostonLocation):practiceLocation;
     hoverIngredientRef.current = hoverOpponent;    
-  }, [hoverOpponent,gameLocation]);
+  }, [hoverOpponent,practiceLocation]);
 
   function onOpponentChange(i: number, value: Opponent) {
     Opponents[i] = value;
@@ -129,13 +128,13 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
     setOpponents([...Opponents]);
   }
 
-  async function saveGame(newGame: Game) {
+  async function savePractice(newPractice: PracticeType) {
     log("create entry");
 
     try {
       setLoading(true);
-      const entry = await createEntry({
-        ...newGame,
+      const entry = await createPracticeEntry({
+        ...newPractice,
         userId: user.uid,
         createdBy: getUserFields(user),
         Opponents: Opponents.filter(ing => ing.name),
@@ -152,15 +151,15 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
     }
   }
 
-  async function updateGame(
+  async function updatePractice(
     id: string,
-    game: Game
+    practice: PracticeType
   ) {
     log("update entry: %s", id);
     setLoading(true);
     try {
-      await updateEntry(id, {
-        ...game,
+      await updatePracticeEntry(id, {
+        ...practice,
         createdBy: getUserFields(user),
         Opponents: Opponents.filter(ing => ing.name)
       });
@@ -281,7 +280,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
         }
       }}
     >
-      <Helmet title={title ? title : "New Game"} />
+      <Helmet title={title ? title : "New Practice"} />
       <Global
         styles={{
           ".Editor": {
@@ -348,7 +347,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
             component={Link}
             to="/"
             label="Go back"
-            replace="true"
+            replace
             variant="ghost"
             css={{
               marginRight: theme.spaces.sm,
@@ -360,12 +359,12 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
           {editing ? (
             <div css={{ marginLeft: "-0.75rem", flex: 1 }}>
               <TransparentInput
-                autoComplete=""
+                autoComplete="off"
                 autoFocus
                 inputSize="lg"
                 value={title}
-                placeholder="Game title"
-                aria-label="Game title"
+                placeholder="Practice title"
+                aria-label="Practice title"
                 onChange={e => {
                   setTitle(e.target.value);
                 }}
@@ -423,7 +422,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   },
                   marginLeft: theme.spaces.sm
                 }}
-                onPress={() => {setEditing(false);gameLocation===""?setGameLocation(defaultBostonLocation):gameLocation}}
+                onPress={() => {setEditing(false);practiceLocation===""?setPracticeLocation(defaultBostonLocation):practiceLocation}}
               >
                 Cancel
               </Button>
@@ -439,16 +438,15 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   const toSave = {
                     teamId: activeTeam.teamId,
                     title,
-                    gameDate: gameDateTime.toUTCString(),
-                    gameLocation,
+                    practiceDate: practiceDateTime.toUTCString(),
+                    practiceLocation,
                     description: content,
                     plain: text,
-                    Opponents,
-                    author: credit,
+                    Opponents,                    
                     image
                   };
 
-                  id ? updateGame(id, toSave) : saveGame(toSave);
+                  id ? updatePractice(id, toSave) : savePractice(toSave);
                 }}
               >
                 Save
@@ -469,7 +467,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
 
           <Container>
             <div css={{ marginTop: theme.spaces.lg }}>
-              <Text variant="h5">Game Date</Text>
+              <Text variant="h5">Practice Date</Text>
               {editing ? (
                 <div
                   css={{
@@ -489,19 +487,19 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   }}
                 >
                   <Datetime 
-                    defaultValue={gameDateTime}
+                    defaultValue={practiceDateTime}
                     dateFormat={"dddd, DD-MMM-YYYY"}
                     timeFormat={true}
                     isValidDate={current => {
                       return current.day() !== 0 && current.day() !== 6;
                     }}
-                    onChange={value => setGameDateTime(moment(value).toDate)}                
+                    onChange={value => setPracticeDateTime(moment(value).toDate)}                
                   />
 
                 </div>
               ) : (
                   <>
-                    <Text>{moment(gameDateTime).format("dddd, MM/DD/YYYY h:mm a")}</Text>
+                    <Text>{moment(practiceDateTime).format("dddd, MM/DD/YYYY h:mm a")}</Text>
                   </>
                 )}
             </div>
@@ -513,10 +511,10 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                     <Contain>
                       <TransparentInput 
                         // placeholder={gamePlaceholder}
-                        value={gameLocation}                         
-                        onFocus = {() => {gameLocation===defaultBostonLocation?setGameLocation(""):gameLocation}} 
+                        value={practiceLocation}                         
+                        onFocus = {() => {practiceLocation===defaultBostonLocation?setPracticeLocation(""):practiceLocation}} 
                         onChange={e => {
-                          setGameLocation(e.target.value);
+                          setPracticeLocation(e.target.value);
                         }}
                       />
                     </Contain>
@@ -525,7 +523,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                     <>
                        
                         <>
-                          <Text >{gameLocation}</Text>
+                          <Text >{practiceLocation}</Text>
                            
                         </>
                        
@@ -574,32 +572,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                                     name: e.target.value
                                   });
                                 }}
-                              />
-                              <TransparentInput
-                                placeholder="Score"
-                                value={ingredient.score}
-                                onChange={e => {
-                                  onOpponentChange(i, {
-                                    ...ingredient,
-                                    score: e.target.value
-                                  });
-                                }}
-                              />
-                              <div
-                                css={{
-                                  marginLeft: theme.spaces.sm,
-                                  flex: "0 0 40px"
-                                }}
-                              >
-                                {i > 0 && (
-                                  <IconButton
-                                    variant="ghost"
-                                    icon={<IconX />}
-                                    label="Delete Score"
-                                    onPress={() => removeOpponent(i)}
-                                  />
-                                )}
-                              </div>
+                              />                                                           
                             </div>
                           </Contain>
                         ) : (
@@ -658,17 +631,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                     );
                   })}
                 </div>
-              )}
-
-              {editing && (
-                <Button
-                  css={{ marginTop: theme.spaces.sm }}
-                  size="sm"
-                  onPress={addNewOpponent}
-                >
-                  Add another
-                </Button>
-              )}
+              )}             
 
               <div css={{ marginTop: theme.spaces.lg }}>
                 <Text variant="h5">Notes</Text>
@@ -685,31 +648,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   />
                 </div>
               </div>
-              <div css={{ marginTop: theme.spaces.lg }}>
-                {editing ? (
-                  <>
-                    <Text variant="h5">Original author</Text>
-                    <Contain>
-                      <TransparentInput
-                        placeholder="Author and source..."
-                        value={credit}
-                        onChange={e => {
-                          setCredit(e.target.value);
-                        }}
-                      />
-                    </Contain>
-                  </>
-                ) : (
-                    <>
-                      {credit && (
-                        <>
-                          <Text variant="h5">Original author</Text>
-                          <Text>{credit}</Text>
-                        </>
-                      )}
-                    </>
-                  )}
-              </div>
+              
             </div>
           </Container>
 

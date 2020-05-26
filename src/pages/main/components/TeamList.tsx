@@ -88,14 +88,14 @@ export const TeamList: React.FunctionComponent<TeamListProps> = ({
             item => item.get("updatedAt").toMillis(),
             "desc"
           ).map(g => (
-            <MenuItem>
+            // <MenuItem>
               <TeamListItem
                 id={g.id}
                 key={g.id}
                 // editable
                 team={ Object.assign({teamId: g.id}, g.data()) as TeamType}
               />
-            </MenuItem>
+            // </MenuItem>
           ))}
         </List>
 
@@ -170,6 +170,7 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
   }
 
   return (
+    <MenuItem>
     <ListItem
       wrap={false}
       onClick={e => {
@@ -204,5 +205,6 @@ export function TeamListItem({ team, id, highlight }: TeamListItemProps) {
           )
       }
     />
+    </MenuItem>
   );
 }

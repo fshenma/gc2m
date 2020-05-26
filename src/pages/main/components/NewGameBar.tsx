@@ -1,15 +1,15 @@
 import * as React from "react";
 import { Tooltip, DarkMode, IconButton, IconPlus } from "sancho";
 import { Link } from "wouter";
-import { useState } from "react";
+// import { useState } from "react";
 import { useSession } from "../../../utils/auth";
 
-interface NewGameBarProps {     
-    newTgtLink?: string;
-  }
+// interface NewGameBarProps {     
+//     newTgtLink?: string;
+//   }
 
-export const NewGameBar: React.FunctionComponent<NewGameBarProps>= ({newTgtLink}:NewGameBarProps) => {
-    const [target, setTarget] = useState("game");
+export const NewGameBar: React.FunctionComponent = () => {
+    // const [target, setTarget] = useState("game");
     const { curTab } = useSession();
     
     return (
@@ -18,7 +18,7 @@ export const NewGameBar: React.FunctionComponent<NewGameBarProps>= ({newTgtLink}
                 <DarkMode>
                     <IconButton
                         component={Link}
-                        to={newTgtLink}
+                        to={`/new${curTab==="game"?"":curTab}`}
                         variant="ghost"
                         label= {`Add ${curTab}`}
                         size="md"

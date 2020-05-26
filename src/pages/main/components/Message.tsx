@@ -45,7 +45,7 @@ function getHighlightKey() {
 
 const log = debug("app:Compose");
 
-export interface ComposeProps {
+export interface MessageProps {
   id?: string;
   defaultTitle?: string;
   defaultImage?: string;
@@ -63,13 +63,13 @@ export interface ComposeProps {
  * @param param0
  */
 
-export const Compose: React.FunctionComponent<ComposeProps> = ({
+export const Message: React.FunctionComponent<MessageProps> = ({
   readOnly,
   id,
   editable,
   defaultCredit = "",
   defaultGameDate, 
-  defaultGameLocation="",
+  defaultGameLocation,
   defaultDescription,
   defaultImage,
   defaultOpponents,
@@ -348,7 +348,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
             component={Link}
             to="/"
             label="Go back"
-            replace="true"
+            replace
             variant="ghost"
             css={{
               marginRight: theme.spaces.sm,
@@ -360,7 +360,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
           {editing ? (
             <div css={{ marginLeft: "-0.75rem", flex: 1 }}>
               <TransparentInput
-                autoComplete=""
+                autoComplete="off"
                 autoFocus
                 inputSize="lg"
                 value={title}
