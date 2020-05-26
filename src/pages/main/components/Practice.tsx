@@ -50,7 +50,7 @@ export interface PracticeProps {
   defaultTitle?: string;
   defaultImage?: string;
   defaultDescription?: string;
-  defaultPracticeDate?:Date;
+  defaultPracticeDate?:any;
   defaultPracticeLocation?:string;
   defaultOpponents?: Opponent[];
   readOnly?: boolean;
@@ -438,7 +438,7 @@ export const Practice: React.FunctionComponent<PracticeProps> = ({
                   const toSave = {
                     teamId: activeTeam.teamId,
                     title,
-                    practiceDate: practiceDateTime.toUTCString(),
+                    practiceDate: new Date(practiceDateTime),
                     practiceLocation,
                     description: content,
                     plain: text,
@@ -487,13 +487,13 @@ export const Practice: React.FunctionComponent<PracticeProps> = ({
                   }}
                 >
                   <Datetime 
-                    defaultValue={practiceDateTime}
+                    value={practiceDateTime}
                     dateFormat={"dddd, DD-MMM-YYYY"}
                     timeFormat={true}
                     isValidDate={current => {
                       return current.day() !== 0 && current.day() !== 6;
                     }}
-                    onChange={value => setPracticeDateTime(moment(value).toDate)}                
+                    onChange={value => setPracticeDateTime(value)}                
                   />
 
                 </div>

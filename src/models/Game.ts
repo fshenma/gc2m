@@ -8,7 +8,7 @@ export interface Opponent {
 export type Game = {
     teamId: string;
     title: string;
-    gameDate: string;
+    gameDate: Date;
     gameLocation: string;
     plain: string;
     Opponents: Opponent[];

@@ -8,7 +8,7 @@ export interface Opponent {
 export type PracticeType = {
     teamId: string;
     title: string;
-    practiceDate: string;
+    practiceDate: Date;
     practiceLocation: string;
     plain: string;
     Opponents: Opponent[];

@@ -50,7 +50,7 @@ export interface ComposeProps {
   defaultTitle?: string;
   defaultImage?: string;
   defaultDescription?: string;
-  defaultGameDate?:Date;
+  defaultGameDate?:any;
   defaultGameLocation?:string;
   defaultOpponents?: Opponent[];
   readOnly?: boolean;
@@ -439,7 +439,7 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   const toSave = {
                     teamId: activeTeam.teamId,
                     title,
-                    gameDate: gameDateTime.toUTCString(),
+                    gameDate: new Date(gameDateTime),
                     gameLocation,
                     description: content,
                     plain: text,
@@ -489,13 +489,13 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
                   }}
                 >
                   <Datetime 
-                    defaultValue={gameDateTime}
+                    value={gameDateTime}
                     dateFormat={"dddd, DD-MMM-YYYY"}
                     timeFormat={true}
                     isValidDate={current => {
                       return current.day() !== 0 && current.day() !== 6;
-                    }}
-                    onChange={value => setGameDateTime(moment(value).toDate)}                
+                    }}                    
+                    onChange={value => setGameDateTime(value)}                
                   />
 
                 </div>

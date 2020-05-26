@@ -439,7 +439,7 @@ export const Message: React.FunctionComponent<MessageProps> = ({
                   const toSave = {
                     teamId: activeTeam.teamId,
                     title,
-                    gameDate: gameDateTime.toUTCString(),
+                    gameDate: gameDateTime,
                     gameLocation,
                     description: content,
                     plain: text,
