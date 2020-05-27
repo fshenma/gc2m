@@ -7,7 +7,7 @@ import { Branding } from "./pages/Branding";
 import { Spinner } from "sancho";
 import { Main } from "./pages/main/Main";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { userContext,appStateReducer,initialState} from "./components/user-context";
+import { userContext,appStateReducer,initialState} from "./context/user-context";
 import Helmet from "react-helmet";
 import { useReducer } from "react";
 

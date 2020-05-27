@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { useContext } from "react";
-import { userContext } from "../components/user-context";
+import { userContext } from "../context/user-context";
 import { getActiveTeam } from "./db";
 import { TeamType } from "../models/Team";
 import React from "react";
