@@ -40,7 +40,7 @@ export function usePractices(toUser = true) {
   const [loading, setLoading] = React.useState(true);
   const [practiceList, setPracticeList] = React.useState([]);
 
-  const key = toUser ? "toUserId" : "fromUserId";
+  const key = "userId";     //toUser ? "toUserId" : "fromUserId";
 
   React.useEffect(() => {
     setLoading(true);
@@ -49,7 +49,7 @@ export function usePractices(toUser = true) {
       .firestore()
       .collection("practices")
       .where(key, "==", user.uid)
-      .orderBy("confirmed")
+    //   .orderBy("confirmed")
       .limit(100) // todo: support pagination
       .onSnapshot(value => {
         const pracList = [];
@@ -57,7 +57,7 @@ export function usePractices(toUser = true) {
         value.docs.forEach(doc => {
           const data = doc.data();
 
-          if (!data.fromUser) {
+          if (!data.userId) {
             return;
           }
 

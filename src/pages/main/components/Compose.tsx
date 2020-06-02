@@ -36,6 +36,8 @@ import { useSession } from "../../../utils/auth";
 import Helmet from "react-helmet";
 import { Link, useLocation } from "wouter";
 import moment from "moment";
+import { TransparentInput } from "../../../components/TransparentInput";
+import { Contain } from "../../../components/Contain";
 
 let n = 0;
 
@@ -741,38 +743,4 @@ export const Compose: React.FunctionComponent<ComposeProps> = ({
   );
 };
 
-interface TransparentInputProps extends InputBaseProps { }
 
-const TransparentInput = (props: TransparentInputProps) => {
-  const theme = useTheme();
-  return (
-    <Input
-      css={{
-        background: "none",
-        border: "none",
-        boxShadow: "none",
-        // paddingTop: theme.spaces.xs,
-        // paddingBottom: theme.spaces.xs,
-        ":focus": {
-          outline: "none",
-          boxShadow: "none",
-          background: "none"
-        }
-      }}
-      {...props}
-    />
-  );
-};
-
-const Contain = props => {
-  return (
-    <div
-      css={{
-        marginTop: "-0.25rem",
-        marginLeft: "-0.75rem",
-        marginRight: "-0.75rem"
-      }}
-      {...props}
-    />
-  );
-};

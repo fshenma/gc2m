@@ -19,7 +19,10 @@ import {
   IconChevronRight,
   IconMoreVertical,
   StackTitle,
-  Skeleton
+  Skeleton,
+  Container,
+  InputBaseProps,
+  Input
 } from "sancho";
 import { SearchBox } from "../../../components/SearchBox";
 import debug from "debug";
@@ -28,10 +31,17 @@ import config from "../../../firebase-config";
 import { useSession } from "../../../utils/auth";
 import find from "lodash.find";
 import { deleteRequestFollow, requestFollow } from "../../../utils/db";
-import { FollowingRecipes } from "../components/FollowingRecipes";
-import { User } from "firebase";
+// import { FollowingRecipes } from "../components/FollowingRecipes";
+// import { User } from "firebase";
+// import Editor, { tryValue } from "../../../components/Editor";
 import { StackItem, StackContext } from "react-gesture-stack";
-import { animated } from "react-spring";
+// import { animated } from "react-spring";
+import { PracticeType } from "../../../models/PracticeType";
+import Datetime from "react-datetime";
+import moment from "moment";
+import { TransparentInput } from "../../../components/TransparentInput";
+import { Contain } from "../../../components/Contain";
+import { SearchTitle } from "../components/SearchTitle";
 
 const client = algoliasearch(
   config.ALGOLIA_APP_ID,
@@ -46,15 +56,19 @@ function searchAlgoliaForUsers(query: string) {
 
 const log = debug("app:FollowingList");
 
-export interface PracticesListProps {}
+export interface PracticesListProps { }
 
 export const PracticesList: React.FunctionComponent<
   PracticesListProps
 > = props => {
   const theme = useTheme();
   const toast = useToast();
-  const {user} = useSession();
+  const { user } = useSession();
+  const [editing, setEditing] = React.useState(false);
   const { loading, practiceList } = usePractices(false);
+  const [content, setContent] = React.useState("");
+  const [practiceDateTime, setPracticeDateTime] = React.useState(null);
+  const [practiceLocation, setPracticeLocation] = React.useState("");  
   const [query, setQuery] = React.useState("");
   const [
     queryResults,
@@ -132,16 +146,17 @@ export const PracticesList: React.FunctionComponent<
   const noUsers = !query && (!practiceList || (practiceList && practiceList.length === 0));
 
   const [index, setIndex] = React.useState(0);
-  const [relation, setRelation] = React.useState(null);
 
+  const [relation, setRelation] = React.useState(null);
+  const [practice, setPractice] = React.useState(null);
   function unfollow(id: string) {
     deleteRequest(id);
     setRelation(null);
     setIndex(0);
   }
 
-  function showRelation(user: User) {
-    setRelation(user);
+  function showPractice(practice: PracticeType) { //user: User
+    setPractice(practice);
     setIndex(1);
   }
 
@@ -239,48 +254,53 @@ export const PracticesList: React.FunctionComponent<
                         }
                       />
                     ))}
-                  {practiceList.map(relation => {
+                  {practiceList.map(practice => {
                     return (
                       <ListItem
-                        key={relation.id}
-                        interactive={relation.confirmed ? true : false}
+                        key={practice.id}
+                        // interactive={practice.confirmed ? true : false}
                         onPress={() =>
-                          showRelation({
-                            id: relation.toUserId,
-                            ...relation.toUser
-                          })
+                          showPractice(
+                            // {
+                            practice
+                            // id: practice.userId,
+                            // ...practice.toUser
+                            // }
+                          )
+                          // log(practice.userId)
                         }
                         contentBefore={
                           <Avatar
                             size="sm"
-                            src={relation.toUser.photoURL}
+                            // src={practice.toUser.photoURL}
                             name={
-                              relation.toUser.displayName ||
-                              relation.toUser.email
+                              practice.title
+                              // practice.toUser.displayName ||
+                              // practice.toUser.email
                             }
                           />
                         }
                         primary={
-                          relation.toUser.displayName || relation.toUser.email
+                          practice.title //|| practice.toUser.email
                         }
                         contentAfter={
-                          relation.confirmed ? (
+                          practice.confirmed ? (
                             <IconChevronRight
                               color={theme.colors.text.muted}
                               aria-hidden
                             />
                           ) : (
-                            <Button
-                              onPress={e => {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                deleteRequest(relation.id);
-                              }}
-                              size="sm"
-                            >
-                              Cancel request
-                            </Button>
-                          )
+                              <Button
+                                onPress={e => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  deleteRequest(practice.id);
+                                }}
+                                size="sm"
+                              >
+                                update
+                              </Button>
+                            )
                         }
                       />
                     );
@@ -294,11 +314,11 @@ export const PracticesList: React.FunctionComponent<
           title: (
             <StackTitle
               contentAfter={
-                relation && (
+                practice && (
                   <Popover
                     content={
                       <MenuList>
-                        <MenuItem onPress={() => unfollow(relation.id)}>
+                        <MenuItem onPress={() => unfollow(practice.userId)}>
                           Unfollow user
                         </MenuItem>
                       </MenuList>
@@ -313,13 +333,97 @@ export const PracticesList: React.FunctionComponent<
                   </Popover>
                 )
               }
-              title={relation ? relation.displayName || relation.email : ""}
+              title={practice ? practice.title : ""}
             />
           ),
           content: (
             <StackItem>
-              {relation && (
-                <FollowingRecipes key={relation.id} id={relation.id} />
+              {practice && (
+                // <FollowingRecipes key={relation.id} id={relation.id} />
+                // practice.practiceDate
+                <div
+                  css={{
+                    flex: 1,
+                    [theme.mediaQueries.md]: {
+                      flex: "none"
+                    }
+                  }}
+                >
+                  <div>
+                    <Container>
+                      <div css={{ marginTop: theme.spaces.lg }}>
+                        <Text variant="h6">Practice Date</Text>
+                        {editing ? (
+                          <div
+                            css={{
+                              display: "flex",
+                              marginLeft: "-0.25rem",
+                              paddingLeft: "0.25rem",
+                              marginRight: "-0.25rem",
+                              paddingRight: "0.25rem",
+
+                              // borderRadius: "0.25rem",
+                              marginBottom: theme.spaces.xs,
+                              fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'",
+                              '& input': {
+                                fontFamily: "inherit;",
+                                width: "200px",
+                              }
+                            }}
+                          >
+                            <Datetime
+                              value={moment(practice.practiceDate.toDate()).format("dddd, MM/DD/YYYY h:mm a")}
+                              dateFormat={"dddd, DD-MMM-YYYY"}
+                              timeFormat={true}
+                              isValidDate={current => {
+                                return current.day() !== 0 && current.day() !== 6;
+                              }}
+                              onChange={value => setPracticeDateTime(value)}
+                            />
+                          </div>
+                        ) : (
+                            <>
+                              <Text>{moment(practice.practiceDate.toDate()).format("dddd, MM/DD/YYYY h:mm a")}</Text>
+                            </>
+                          )}
+                      </div>
+                      <div css={{ marginTop: theme.spaces.lg }}>
+                        <Text variant="h6">Location</Text>
+                        {editing ? (
+                          <>
+
+                            <Contain>
+                              <TransparentInput
+                                // placeholder={gamePlaceholder}
+                                value={practice.practiceLocation}
+                                // onFocus = {() => {practiceLocation===defaultBostonLocation?setPracticeLocation(""):practiceLocation}} 
+                                onChange={e => {
+                                  setPracticeLocation(e.target.value);
+                                }}
+                              />
+                            </Contain>
+                          </>
+                        ) : (
+                            <>
+                              <>
+                                <Text >{practice.practiceLocation}</Text>
+                              </>
+                            </>
+                          )}
+                      </div>
+                      <div css={{ marginTop: theme.spaces.lg }}>
+                        <Text variant="h6">Notes</Text>
+                        <div>
+                        <>
+                              <>
+                                <Text >{practice.plain}</Text>
+                              </>
+                            </>
+                        </div>
+                      </div>
+                    </Container>
+                  </div>
+                </div>
               )}
             </StackItem>
           )
@@ -329,41 +433,3 @@ export const PracticesList: React.FunctionComponent<
   );
 };
 
-function SearchTitle({ children }: { children: React.ReactNode }) {
-  const {
-    navHeight,
-    index,
-    active,
-    changeIndex,
-    opacity,
-    transform
-  } = React.useContext(StackContext);
-
-  return (
-    <div
-      className="StackTitle"
-      aria-hidden={!active}
-      style={{
-        pointerEvents: active ? "auto" : "none",
-        zIndex: 10,
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0
-      }}
-    >
-      <animated.div
-        className="StackTitle__heading"
-        style={{
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          opacity,
-          transform: transform.to(x => `translateX(${x * 0.85}%)`)
-        }}
-      >
-        {children}
-      </animated.div>
-    </div>
-  );
-}
