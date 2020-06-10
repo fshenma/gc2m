@@ -38,6 +38,7 @@ import moment from "moment";
 import { TransparentInput } from "../../../components/TransparentInput";
 import { Contain } from "../../../components/Contain";
 import { SearchTitle } from "../components/SearchTitle";
+import { Practice } from "../components/Practice";
 
 const client = algoliasearch(
   config.ALGOLIA_APP_ID,
@@ -334,119 +335,8 @@ export const PracticesList: React.FunctionComponent<
           content: (
             <StackItem>
               {practice && (
-                // <FollowingRecipes key={relation.id} id={relation.id} />
-                // practice.practiceDate
-                <div
-                  css={{
-                    flex: 1,
-                    [theme.mediaQueries.md]: {
-                      flex: "none"
-                    }
-                  }}
-                >
-                  <div>
-                    <Container>
-                      <div css={{ marginTop: theme.spaces.lg }}>
-                        <Text variant="h6">Practice Date</Text>
-                        {editing ? (
-                          <div
-                            css={{
-                              display: "flex",
-                              marginLeft: "-0.25rem",
-                              paddingLeft: "0.25rem",
-                              marginRight: "-0.25rem",
-                              paddingRight: "0.25rem",
-
-                              // borderRadius: "0.25rem",
-                              marginBottom: theme.spaces.xs,
-                              fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'",
-                              '& input': {
-                                fontFamily: "inherit;",
-                                width: "200px",
-                              }
-                            }}
-                          >
-                            <Datetime
-                              value={moment(practice.practiceDate.toDate()).format("dddd, MM/DD/YYYY h:mm a")}
-                              dateFormat={"dddd, DD-MMM-YYYY"}
-                              timeFormat={true}
-                              isValidDate={current => {
-                                return current.day() !== 0 && current.day() !== 6;
-                              }}
-                              onChange={value => setPracticeDateTime(value)}
-                            />
-                          </div>
-                        ) : (
-                            <>
-                              <Text>{moment(practice.practiceDate.toDate()).format("dddd, MM/DD/YYYY h:mm a")}</Text>
-                            </>
-                          )}
-                      </div>
-                      <div css={{ marginTop: theme.spaces.lg }}>
-                        <Text variant="h6">Location</Text>
-                        {editing ? (
-                          <>
-
-                            <Contain>
-                              <TransparentInput 
-                                css = {locFocus && {border: '1px solid #2b6cb0' }}
-                                defaultValue={practice.practiceLocation}
-                                // placeholder={gamePlaceholder}
-                                // value={practice.practiceLocation}
-                                onFocus = {() => {setLocFocus(true)}} 
-                                onChange={e => {
-                                  setPracticeLocation(e.target.value);
-                                }}
-                              />
-                            </Contain>
-                          </>
-                        ) : (
-                            <>
-                              <>
-                                <Text >{practice.practiceLocation}</Text>
-                              </>
-                            </>
-                          )}
-                      </div>
-                      <div css={{ marginTop: theme.spaces.lg }}>
-                        <Text variant="h6">Notes</Text>
-                        {editing ? (
-                          <>
-
-                            <Contain>
-                              <TextArea 
-                                css = {descFocus && {border: '1px solid #2b6cb0' }}
-                                defaultValue={practice.plain}
-                                // placeholder={gamePlaceholder}
-                                // value={practice.practiceLocation}
-                                onFocus = {() => {setDescFocus(true)}} 
-                                onChange={e => {
-                                  setDesc(e.target.value);
-                                }}
-                              />
-                            </Contain>
-                          </>
-                        ) : (
-                            <>
-                              <>
-                                <Text >{practice.plain}</Text>
-                              </>
-                            </>
-                          )}
-                      </div>
-
-                      <div css={{ marginTop: theme.spaces.lg }}>
-                        
-                        {editing && (
-                          <Button onPress={() => {setEditing(false); }}>
-                            Save                            
-                          </Button>
-                          )}
-                      </div>
-                    </Container>
-                  </div>
-                </div>
-              )}
+                <Practice />
+                 )}
             </StackItem>
           )
         }
