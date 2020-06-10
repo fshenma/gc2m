@@ -1,3 +1,4 @@
+import * as React from "react";
 import { InputBaseProps, useTheme, Input } from "sancho";
 
 interface TransparentInputProps extends InputBaseProps { }

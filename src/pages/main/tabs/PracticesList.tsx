@@ -7,7 +7,6 @@ import {
   ListItem,
   Avatar,
   IconButton,
-  Button,
   Popover,
   MenuList,
   Stack,
@@ -21,8 +20,9 @@ import {
   StackTitle,
   Skeleton,
   Container,
-  InputBaseProps,
-  Input
+  CloseButton,
+  TextArea,
+  Button
 } from "sancho";
 import { SearchBox } from "../../../components/SearchBox";
 import debug from "debug";
@@ -31,11 +31,7 @@ import config from "../../../firebase-config";
 import { useSession } from "../../../utils/auth";
 import find from "lodash.find";
 import { deleteRequestFollow, requestFollow } from "../../../utils/db";
-// import { FollowingRecipes } from "../components/FollowingRecipes";
-// import { User } from "firebase";
-// import Editor, { tryValue } from "../../../components/Editor";
 import { StackItem, StackContext } from "react-gesture-stack";
-// import { animated } from "react-spring";
 import { PracticeType } from "../../../models/PracticeType";
 import Datetime from "react-datetime";
 import moment from "moment";
@@ -66,10 +62,11 @@ export const PracticesList: React.FunctionComponent<
   const { user } = useSession();
   const [editing, setEditing] = React.useState(false);
   const { loading, practiceList } = usePractices(false);
-  const [content, setContent] = React.useState("");
+  // const [content, setContent] = React.useState("");
   const [practiceDateTime, setPracticeDateTime] = React.useState(null);
   const [practiceLocation, setPracticeLocation] = React.useState("");  
   const [query, setQuery] = React.useState("");
+  const defaultBostonLocation= "Boston, MA";
   const [
     queryResults,
     setQueryResults
@@ -129,14 +126,14 @@ export const PracticesList: React.FunctionComponent<
     }
   }
 
-  async function deleteRequest(id: string) {
+  async function deletePractice(id: string) {
     try {
-      log("delete request: %s", id);
+      log("delete practice: %s", id);
       await deleteRequestFollow(id);
     } catch (err) {
       console.error(err);
       toast({
-        title: "An error occurred while cancelling your request.",
+        title: "An error occurred while deleting practice.",
         subtitle: err.message,
         intent: "danger"
       });
@@ -146,13 +143,15 @@ export const PracticesList: React.FunctionComponent<
   const noUsers = !query && (!practiceList || (practiceList && practiceList.length === 0));
 
   const [index, setIndex] = React.useState(0);
-
-  const [relation, setRelation] = React.useState(null);
+  const [locFocus, setLocFocus] = React.useState(false);
+  const [desc, setDesc] = React.useState(null);
+  const [descFocus, setDescFocus] = React.useState(false);
   const [practice, setPractice] = React.useState(null);
-  function unfollow(id: string) {
-    deleteRequest(id);
-    setRelation(null);
-    setIndex(0);
+  function editPractice(id: string) {
+    // deleteRequest(id);
+    // setRelation(null);
+    setEditing(true);
+    setIndex(1);
   }
 
   function showPractice(practice: PracticeType) { //user: User
@@ -177,11 +176,12 @@ export const PracticesList: React.FunctionComponent<
             <SearchTitle>
               <SearchBox
                 css={{ borderBottom: "none" }}
-                label="Search for users to follow"
+                label="Search for practices"
                 query={query}
                 setQuery={setQuery}
               />
             </SearchTitle>
+             
           ),
           content: (
             <StackItem>
@@ -258,14 +258,9 @@ export const PracticesList: React.FunctionComponent<
                     return (
                       <ListItem
                         key={practice.id}
-                        // interactive={practice.confirmed ? true : false}
                         onPress={() =>
                           showPractice(
-                            // {
-                            practice
-                            // id: practice.userId,
-                            // ...practice.toUser
-                            // }
+                            practice                            
                           )
                           // log(practice.userId)
                         }
@@ -290,16 +285,16 @@ export const PracticesList: React.FunctionComponent<
                               aria-hidden
                             />
                           ) : (
-                              <Button
+                            <CloseButton
+                                label="Delete Practice"
                                 onPress={e => {
                                   e.stopPropagation();
                                   e.preventDefault();
-                                  deleteRequest(practice.id);
+                                  deletePractice(practice.id);
                                 }}
                                 size="sm"
-                              >
-                                update
-                              </Button>
+                              />
+                                 
                             )
                         }
                       />
@@ -318,8 +313,8 @@ export const PracticesList: React.FunctionComponent<
                   <Popover
                     content={
                       <MenuList>
-                        <MenuItem onPress={() => unfollow(practice.userId)}>
-                          Unfollow user
+                        <MenuItem onPress={() => editPractice(practice.userId)}>
+                          Edit
                         </MenuItem>
                       </MenuList>
                     }
@@ -393,10 +388,12 @@ export const PracticesList: React.FunctionComponent<
                           <>
 
                             <Contain>
-                              <TransparentInput
+                              <TransparentInput 
+                                css = {locFocus && {border: '1px solid #2b6cb0' }}
+                                defaultValue={practice.practiceLocation}
                                 // placeholder={gamePlaceholder}
-                                value={practice.practiceLocation}
-                                // onFocus = {() => {practiceLocation===defaultBostonLocation?setPracticeLocation(""):practiceLocation}} 
+                                // value={practice.practiceLocation}
+                                onFocus = {() => {setLocFocus(true)}} 
                                 onChange={e => {
                                   setPracticeLocation(e.target.value);
                                 }}
@@ -413,13 +410,38 @@ export const PracticesList: React.FunctionComponent<
                       </div>
                       <div css={{ marginTop: theme.spaces.lg }}>
                         <Text variant="h6">Notes</Text>
-                        <div>
-                        <>
+                        {editing ? (
+                          <>
+
+                            <Contain>
+                              <TextArea 
+                                css = {descFocus && {border: '1px solid #2b6cb0' }}
+                                defaultValue={practice.plain}
+                                // placeholder={gamePlaceholder}
+                                // value={practice.practiceLocation}
+                                onFocus = {() => {setDescFocus(true)}} 
+                                onChange={e => {
+                                  setDesc(e.target.value);
+                                }}
+                              />
+                            </Contain>
+                          </>
+                        ) : (
+                            <>
                               <>
                                 <Text >{practice.plain}</Text>
                               </>
                             </>
-                        </div>
+                          )}
+                      </div>
+
+                      <div css={{ marginTop: theme.spaces.lg }}>
+                        
+                        {editing && (
+                          <Button onPress={() => {setEditing(false); }}>
+                            Save                            
+                          </Button>
+                          )}
                       </div>
                     </Container>
                   </div>
